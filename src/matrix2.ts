@@ -130,7 +130,6 @@ export class Line {
     let w = v.transform(m.inverse);
 
     return l1.point.translate(l1.vector.scale(w.y));
-    //return Vector.sum(l1.point, l1.vector.scale(w.y));
   }
 }
 
