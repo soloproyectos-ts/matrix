@@ -28,12 +28,16 @@ export class Vector {
     return Math.sqrt(this.x * this.x + this.y * this.y);
   }
 
-  // Multiplies the vector by [value].
+  // Multiplies the vector by a [value].
+  //
+  // Returns [this] * [value].
   scale(value: number): Vector {
     return new Vector(value * this.x, value * this.y);
   }
 
   // Multiplies [m] by the vector.
+  //
+  // Returns [m] * [this].
   transform(m: Matrix): Vector {
     let [v0, v1] = m.vectors;
 
@@ -56,6 +60,8 @@ export class Matrix {
   }
 
   // Scales a matrix
+  //
+  // Returns [this] * [value].
   scale(value: number): Matrix {
     return new Matrix(
       this.vectors[0].scale(value), this.vectors[1].scale(value)
@@ -118,6 +124,7 @@ export class Line {
   }
 }
 
+// TODO: remove this function
 export function vector(p0: Point, p1: Point): Vector {
   let v0 = new Vector(p0.x, p0.y);
   let v1 = new Vector(p1.x, p1.y);
