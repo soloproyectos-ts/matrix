@@ -7,8 +7,8 @@ export class Point {
     this.y = y;
   }
 
-  translate(v: Vector): Point {
-    return new Point(this.x + v.x, this.y + v.y);
+  translate(vector: Vector): Point {
+    return new Point(this.x + vector.x, this.y + vector.y);
   }
 }
 
