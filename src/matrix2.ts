@@ -30,14 +30,14 @@ export class Vector {
 
   // Multiplies the vector by a [value].
   //
-  // Returns [this] * [value].
+  // Returns [this] * [value]
   scale(value: number): Vector {
     return new Vector(value * this.x, value * this.y);
   }
 
   // Multiplies [m] by the vector.
   //
-  // Returns [m] * [this].
+  // Returns [m] * [this]
   transform(m: Matrix): Vector {
     let [v0, v1] = m.vectors;
 
@@ -47,8 +47,18 @@ export class Vector {
     );
   }
 
+  // Sum [v0] and [v1]
+  //
+  // Returns [v0] + [v1]
   static sum(v0: Vector, v1: Vector): Vector {
     return new Vector(v0.x + v1.x, v0.y + v1.y);
+  }
+
+  // Subtract [v1] from [v0];
+  //
+  // Returns [v0] - [v1]
+  static sub(v0: Vector, v1: Vector): Vector {
+    return Vector.sum(v1, v0.opposite);
   }
 }
 
@@ -61,7 +71,7 @@ export class Matrix {
 
   // Scales a matrix
   //
-  // Returns [this] * [value].
+  // Returns [this] * [value]
   scale(value: number): Matrix {
     return new Matrix(
       this.vectors[0].scale(value), this.vectors[1].scale(value)
