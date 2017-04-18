@@ -20,6 +20,13 @@ export class Vector {
     [this.x, this.y] = [x, y];
   }
 
+  static createFromPoints(p0: Point, p1: Point): Vector {
+    let v0 = new Vector(p0.x, p0.y);
+    let v1 = new Vector(p1.x, p1.y);
+
+    return Vector.sub(v0, v1);
+  }
+
   get opposite(): Vector {
     return new Vector(-this.x, -this.y);
   }
@@ -126,17 +133,9 @@ export class Line {
 
   static getIntersection(l0: Line, l1: Line): Point {
     let m = new Matrix(l0.vector, l1.vector.opposite);
-    let v = vector(l0.point, l1.point);
+    let v = Vector.createFromPoints(l0.point, l1.point);
     let w = v.transform(m.inverse);
 
     return l1.point.translate(l1.vector.scale(w.y));
   }
-}
-
-// TODO: remove this function
-export function vector(p0: Point, p1: Point): Vector {
-  let v0 = new Vector(p0.x, p0.y);
-  let v1 = new Vector(p1.x, p1.y);
-
-  return Vector.sum(v1, v0.opposite);
 }
