@@ -9,7 +9,10 @@
     "target": "ES5"
   },
   "compileOnSave": true,
-  "filesGlob": [
+  "include": [
     "src/**/*.ts"
+  ],
+  "exclude": [
+    "dist/**/*.dt.ts"
   ]
 }
