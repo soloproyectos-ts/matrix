@@ -45,7 +45,7 @@ export class Vector {
   // Multiplies [m] by the vector.
   //
   // Returns [m] * [this]
-  transform(m: Matrix): Vector {
+  transform(m: SquareMatrix): Vector {
     let [v0, v1] = m.vectors;
 
     return new Vector(
@@ -69,7 +69,7 @@ export class Vector {
   }
 }
 
-export class Matrix {
+export class SquareMatrix {
   readonly vectors: [Vector, Vector];
 
   constructor (v0: Vector, v1: Vector) {
@@ -79,17 +79,17 @@ export class Matrix {
   // Scales a matrix
   //
   // Returns [this] * [value]
-  scale(value: number): Matrix {
-    return new Matrix(
+  scale(value: number): SquareMatrix {
+    return new SquareMatrix(
       this.vectors[0].scale(value), this.vectors[1].scale(value)
     );
   }
 
   // Gets the matrix adjoint.
-  get adj(): Matrix {
+  get adj(): SquareMatrix {
     let [v0, v1] = this.vectors;
 
-    return new Matrix(new Vector(v1.y, -v0.y), new Vector(-v1.x, v0.x));
+    return new SquareMatrix(new Vector(v1.y, -v0.y), new Vector(-v1.x, v0.x));
   }
 
   // Gets the matrix determinant.
@@ -100,7 +100,7 @@ export class Matrix {
   }
 
   // Gets the inverse of the matrix.
-  get inverse(): Matrix {
+  get inverse(): SquareMatrix {
     return this.adj.scale(1 / this.det);
   }
 }
@@ -132,7 +132,7 @@ export class Line {
   }
 
   static getIntersection(l0: Line, l1: Line): Point {
-    let m = new Matrix(l0.vector, l1.vector.opposite);
+    let m = new SquareMatrix(l0.vector, l1.vector.opposite);
     let v = Vector.createFromPoints(l0.point, l1.point);
     let w = v.transform(m.inverse);
 
