@@ -10,8 +10,5 @@
   },
   "filesGlob": [
     "src/**/*.ts"
-  ],
-  "exclude": [
-    "build/**/*.d.ts"
   ]
 }
