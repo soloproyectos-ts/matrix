@@ -1,3 +1,13 @@
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 define(["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -53,21 +63,38 @@ define(["require", "exports"], function (require, exports) {
     }());
     exports.Vector = Vector;
     var Matrix = (function () {
-        function Matrix(v0, v1) {
-            this.vectors = [v0, v1];
+        function Matrix() {
+            var vectors = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                vectors[_i] = arguments[_i];
+            }
+            this.vectors = vectors;
         }
         Matrix.prototype.scale = function (value) {
-            return new Matrix(this.vectors[0].scale(value), this.vectors[1].scale(value));
+            var vectors = [];
+            for (var _i = 0, _a = this.vectors; _i < _a.length; _i++) {
+                var vector = _a[_i];
+                vectors.push(vector.scale(value));
+            }
+            return new (Matrix.bind.apply(Matrix, [void 0].concat(vectors)))();
         };
-        Object.defineProperty(Matrix.prototype, "adj", {
+        return Matrix;
+    }());
+    exports.Matrix = Matrix;
+    var SquareMatrix = (function (_super) {
+        __extends(SquareMatrix, _super);
+        function SquareMatrix(v0, v1) {
+            return _super.call(this, v0, v1) || this;
+        }
+        Object.defineProperty(SquareMatrix.prototype, "adj", {
             get: function () {
                 var _a = this.vectors, v0 = _a[0], v1 = _a[1];
-                return new Matrix(new Vector(v1.y, -v0.y), new Vector(-v1.x, v0.x));
+                return new SquareMatrix(new Vector(v1.y, -v0.y), new Vector(-v1.x, v0.x));
             },
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(Matrix.prototype, "det", {
+        Object.defineProperty(SquareMatrix.prototype, "det", {
             get: function () {
                 var _a = this.vectors, v0 = _a[0], v1 = _a[1];
                 return v0.x * v1.y - v1.x * v0.y;
@@ -75,16 +102,16 @@ define(["require", "exports"], function (require, exports) {
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(Matrix.prototype, "inverse", {
+        Object.defineProperty(SquareMatrix.prototype, "inverse", {
             get: function () {
                 return this.adj.scale(1 / this.det);
             },
             enumerable: true,
             configurable: true
         });
-        return Matrix;
-    }());
-    exports.Matrix = Matrix;
+        return SquareMatrix;
+    }(Matrix));
+    exports.SquareMatrix = SquareMatrix;
     var Line = (function () {
         function Line(point, vector) {
             this.point = point;
@@ -102,7 +129,7 @@ define(["require", "exports"], function (require, exports) {
             return v0.x * v1.y == v1.x * v0.y;
         };
         Line.getIntersection = function (l0, l1) {
-            var m = new Matrix(l0.vector, l1.vector.opposite);
+            var m = new SquareMatrix(l0.vector, l1.vector.opposite);
             var v = Vector.createFromPoints(l0.point, l1.point);
             var w = v.transform(m.inverse);
             return l1.point.translate(l1.vector.scale(w.y));
