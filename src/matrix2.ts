@@ -69,20 +69,31 @@ export class Vector {
   }
 }
 
-export class SquareMatrix {
-  readonly vectors: [Vector, Vector];
+export class Matrix {
+  readonly vectors: Array<Vector>;
 
-  constructor (v0: Vector, v1: Vector) {
-    this.vectors = [v0, v1];
+  constructor (...vectors: Array<Vector>) {
+    this.vectors = vectors;
   }
 
   // Scales a matrix
   //
   // Returns [this] * [value]
-  scale(value: number): SquareMatrix {
-    return new SquareMatrix(
-      this.vectors[0].scale(value), this.vectors[1].scale(value)
-    );
+  scale(value: number): Matrix {
+    let vectors = [];
+
+    for (let vector of this.vectors) {
+      vectors.push(vector.scale(value));
+    }
+
+    return new Matrix(...vectors);
+  }
+}
+
+export class SquareMatrix extends Matrix {
+
+  constructor (v0: Vector, v1: Vector) {
+    super(v0, v1);
   }
 
   // Gets the matrix adjoint.
@@ -101,7 +112,7 @@ export class SquareMatrix {
 
   // Gets the inverse of the matrix.
   get inverse(): SquareMatrix {
-    return this.adj.scale(1 / this.det);
+    return this.adj.scale(1 / this.det) as SquareMatrix;
   }
 }
 
