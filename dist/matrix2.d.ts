@@ -12,17 +12,20 @@ export declare class Vector {
     readonly opposite: Vector;
     readonly length: number;
     scale(value: number): Vector;
-    transform(m: Matrix): Vector;
+    transform(m: SquareMatrix): Vector;
     static sum(v0: Vector, v1: Vector): Vector;
     static sub(v0: Vector, v1: Vector): Vector;
 }
 export declare class Matrix {
-    readonly vectors: [Vector, Vector];
-    constructor(v0: Vector, v1: Vector);
+    readonly vectors: Array<Vector>;
+    constructor(...vectors: Array<Vector>);
     scale(value: number): Matrix;
-    readonly adj: Matrix;
+}
+export declare class SquareMatrix extends Matrix {
+    constructor(v0: Vector, v1: Vector);
+    readonly adj: SquareMatrix;
     readonly det: number;
-    readonly inverse: Matrix;
+    readonly inverse: SquareMatrix;
 }
 export declare class Line {
     readonly point: Point;
