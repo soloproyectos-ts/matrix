@@ -37,6 +37,15 @@ export class Vector {
     return this.z.length;
   }
 
+  // Sum [v0] and [v1]
+  //
+  // Returns [v0] + [v1]
+  static sum(v0: Vector, v1: Vector): Vector {
+    return new Vector(...v0.z.map(function (z: number, index: number) {
+      return z + v1.z[index];
+    }));
+  }
+
   toString(): string {
     return `[${this.z.join(', ')}]`;
   }
