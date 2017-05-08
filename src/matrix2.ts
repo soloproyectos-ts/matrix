@@ -37,7 +37,13 @@ export class Vector {
     return this.z.length;
   }
 
-  // Sum [v0] and [v1]
+  get opposite(): Vector {
+    return new Vector(...this.z.map(function (z: number) {
+      return -z;
+    }));
+  }
+
+  // Sums [v0] and [v1]
   //
   // Returns [v0] + [v1]
   static sum(v0: Vector, v1: Vector): Vector {
