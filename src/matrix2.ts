@@ -21,7 +21,7 @@ export class Point {
 }
 
 export class Vector {
-  readonly z: Array<number>
+  readonly z: Array<number>;
 
   constructor (...z: Array<number>) {
     this.z = z;
@@ -33,16 +33,33 @@ export class Vector {
     }));
   }
 
+  get length(): number {
+    return this.z.length;
+  }
+
   toString(): string {
     return `[${this.z.join(', ')}]`;
   }
 }
 
 export class Matrix {
-  readonly vectors: Array<Vector>
+  readonly vectors: Array<Vector>;
+  readonly width: number;
 
   constructor (...vectors: Array<Vector>) {
+    let width = vectors.length > 0? vectors[0].length : 0;
+    if (!vectors.every(function (vector: Vector) {
+      return vector.length == width;
+    })) {
+      throw 'Argument error: all vector must have the same length';
+    };
+
     this.vectors = vectors;
+    this.width = width;
+  }
+
+  get height(): number {
+    return this.vectors.length;
   }
 
   scale(value: number) {
@@ -50,19 +67,26 @@ export class Matrix {
       return vector.scale(value);
     }));
   }
+
+  toString(): string {
+    return this.vectors.map(function (vector: Vector) {
+      return vector.toString();
+    }).join('\n');
+  }
 }
 
 export abstract class SquareMatrix extends Matrix {
   constructor(...v: Array<Vector>) {
-    let size = v.length;
-    for (let vector of v) {
-      if (vector.z.length != size) {
-        throw 'Argument error: invalid square matrix';
-      }
-    }
-
     super(...v);
+
+    if (this.width != this.height) {
+      throw 'Argument error: not a square matrix';
+    }
   }
+
+  abstract get adjoint(): SquareMatrix;
+  abstract get determinant(): number;
+  abstract get inverse(): SquareMatrix;
 }
 
 export namespace dim2 {
