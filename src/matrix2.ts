@@ -53,7 +53,7 @@ export class Vector {
       throw 'Argument error: invalid matrix transformation';
     }
 
-    for (let i = 0; i < m.width; i++) {
+    for (let i = 0; i < m.length; i++) {
       let total = 0;
 
       for (let j = 0; j < m.vectors.length; j++) {
@@ -100,18 +100,18 @@ export class Vector {
 
 export class Matrix {
   readonly vectors: Array<Vector>;
-  readonly width: number;
+  readonly length: number;
 
   constructor (...vectors: Array<Vector>) {
-    let width = vectors.length > 0? vectors[0].length : 0;
+    let length = vectors.length > 0? vectors[0].length : 0;
     if (!vectors.every(function (vector: Vector) {
-      return vector.length == width;
+      return vector.length == length;
     })) {
       throw 'Argument error: all vector must have the same length';
     };
 
     this.vectors = vectors;
-    this.width = width;
+    this.length = length;
   }
 
   scale(value: number) {
@@ -131,7 +131,7 @@ export abstract class SquareMatrix extends Matrix {
   constructor(...v: Array<Vector>) {
     super(...v);
 
-    if (this.width != this.vectors.length) {
+    if (this.length != this.vectors.length) {
       throw 'Argument error: not a square matrix';
     }
   }
