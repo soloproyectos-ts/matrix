@@ -49,7 +49,7 @@ export class Vector {
   transform(m: Matrix): Vector {
     let z = [];
 
-    if (m.height != this.length) {
+    if (m.vectors.length != this.length) {
       throw 'Argument error: invalid matrix transformation';
     }
 
@@ -114,10 +114,6 @@ export class Matrix {
     this.width = width;
   }
 
-  get height(): number {
-    return this.vectors.length;
-  }
-
   scale(value: number) {
     return new Matrix(...this.vectors.map(function (vector: Vector) {
       return vector.scale(value);
@@ -135,7 +131,7 @@ export abstract class SquareMatrix extends Matrix {
   constructor(...v: Array<Vector>) {
     super(...v);
 
-    if (this.width != this.height) {
+    if (this.width != this.vectors.length) {
       throw 'Argument error: not a square matrix';
     }
   }
