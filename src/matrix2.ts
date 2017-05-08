@@ -56,6 +56,13 @@ export class Vector {
     }));
   }
 
+  // Subtracts [v1] from [v0];
+  //
+  // Returns [v0] - [v1]
+  static sub(v0: Vector, v1: Vector): Vector {
+    return Vector.sum(v0, v1.opposite);
+  }
+
   toString(): string {
     return `[${this.z.join(', ')}]`;
   }
