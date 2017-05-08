@@ -37,13 +37,6 @@ export class Vector {
     return this.z.length;
   }
 
-  // Gets the euclidean norm.
-  get norm(): number {
-    return Math.sqrt(this.z.reduce(function (total: number, z: number) {
-      return total + z * z;
-    }));
-  }
-
   get opposite(): Vector {
     return new Vector(...this.z.map(function (z: number) {
       return -z;
@@ -68,6 +61,13 @@ export class Vector {
   // Returns [v0] - [v1]
   static sub(v0: Vector, v1: Vector): Vector {
     return Vector.sum(v0, v1.opposite);
+  }
+
+  // Gets the euclidean norm.
+  get norm(): number {
+    return Math.sqrt(this.z.reduce(function (total: number, z: number) {
+      return total + z * z;
+    }));
   }
 
   toString(): string {
