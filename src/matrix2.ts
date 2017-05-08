@@ -41,6 +41,10 @@ export class Vector {
   //
   // Returns [v0] + [v1]
   static sum(v0: Vector, v1: Vector): Vector {
+    if (v0.length != v1.length) {
+      throw 'Argument error: vectors must have the same size';
+    }
+
     return new Vector(...v0.z.map(function (z: number, index: number) {
       return z + v1.z[index];
     }));
