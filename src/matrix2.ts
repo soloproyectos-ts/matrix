@@ -1,25 +1,3 @@
-export class Point {
-  readonly z: Array<number>;
-
-  constructor (...z: Array<number>) {
-    this.z = z;
-  }
-
-  move(vector: Vector): Point {
-    return new Point(...this.z.map(function (z: number, index: number) {
-      if (vector.z[index] === undefined) {
-        throw 'Argument error: invalid vector size';
-      }
-
-      return z + vector.z[index];
-    }));
-  }
-
-  toString(): string {
-    return `[${this.z.join(', ')}]`;
-  }
-}
-
 export class Vector {
   readonly z: Array<number>;
 
