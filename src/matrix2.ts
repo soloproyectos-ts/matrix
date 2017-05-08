@@ -43,6 +43,29 @@ export class Vector {
     }));
   }
 
+  // Multiplies [m] by the vector.
+  //
+  // Returns [m] * [this]
+  transform(m: Matrix): Vector {
+    let z = [];
+
+    if (m.height != this.length) {
+      throw 'Argument error: invalid matrix transformation';
+    }
+
+    for (let i = 0; i < m.width; i++) {
+      let total = 0;
+
+      for (let j = 0; j < m.vectors.length; j++) {
+        total += m.vectors[j].z[i] * this.z[j];
+      }
+
+      z.push(total);
+    }
+
+    return new Vector(...z);
+  }
+
   // Sums [v0] and [v1]
   //
   // Returns [v0] + [v1]
