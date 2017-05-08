@@ -5,7 +5,7 @@ export class Point {
     this.z = z;
   }
 
-  translate(vector: Vector): Point {
+  move(vector: Vector): Point {
     return new Point(...this.z.map(function (z: number, index: number) {
       if (vector.z[index] === undefined) {
         throw 'Argument error: invalid vector size';
@@ -75,7 +75,7 @@ export namespace dim2 {
       this.y = y;
     }
 
-    translate(vector: Vector): Point {
+    move(vector: Vector): Point {
       return new Point(this.x + vector.x, this.y + vector.y);
     }
   }
@@ -215,7 +215,7 @@ export namespace dim2 {
       let v = Vector.createFromPoints(l0.point, l1.point);
       let w = v.transform(m.inverse);
 
-      return l1.point.translate(l1.vector.scale(w.y));
+      return l1.point.move(l1.vector.scale(w.y));
     }
   }
 }
