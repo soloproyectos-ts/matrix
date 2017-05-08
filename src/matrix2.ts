@@ -37,6 +37,13 @@ export class Vector {
     return this.z.length;
   }
 
+  // Gets the euclidean norm.
+  get norm(): number {
+    return Math.sqrt(this.z.reduce(function (total: number, z: number) {
+      return total + z * z;
+    }));
+  }
+
   get opposite(): Vector {
     return new Vector(...this.z.map(function (z: number) {
       return -z;
