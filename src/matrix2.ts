@@ -5,12 +5,16 @@ export class Point {
     this.z = z;
   }
 
-  move(vector: Vector): Point {
-    return new Point(...this.z.map(function (z: number, index: number) {
-      if (vector.z[index] === undefined) {
-        throw 'Argument error: invalid vector size';
-      }
+  get length(): number {
+    return this.z.length;
+  }
 
+  move(vector: Vector): Point {
+    if (this.length != vector.length) {
+      throw 'Argument error: invalid vector size';
+    }
+
+    return new Point(...this.z.map(function (z: number, index: number) {
       return z + vector.z[index];
     }));
   }
@@ -27,14 +31,14 @@ export class Vector {
     this.z = z;
   }
 
+  get length(): number {
+    return this.z.length;
+  }
+
   scale(value: number): Vector {
     return new Vector(...this.z.map(function (z: number) {
       return value * z;
     }));
-  }
-
-  get length(): number {
-    return this.z.length;
   }
 
   get opposite(): Vector {
@@ -49,8 +53,8 @@ export class Vector {
   transform(m: Matrix): Vector {
     let z = [];
 
-    if (m.vectors.length != this.length) {
-      throw 'Argument error: invalid matrix transformation';
+    if (m.width != this.length) {
+      throw 'Argument error: invalid matrix width';
     }
 
     for (let i = 0; i < m.length; i++) {
@@ -103,15 +107,15 @@ export class Matrix {
   readonly length: number;
 
   constructor (...vectors: Array<Vector>) {
-    let length = vectors.length > 0? vectors[0].length : 0;
-    if (!vectors.every(function (vector: Vector) {
-      return vector.length == length;
-    })) {
-      throw 'Argument error: all vector must have the same length';
-    };
-
     this.vectors = vectors;
     this.length = length;
+
+    let height = this.height;
+    if (!vectors.every(function (vector: Vector): boolean {
+      return vector.length == height;
+    })) {
+      throw 'Argument error: all vectors must have the same length';
+    };
   }
 
   get width(): number {
@@ -119,11 +123,7 @@ export class Matrix {
   }
 
   get height(): number {
-    return this.vectors.map(function (item: Vector): number {
-      return item.length;
-    }).reduce(function (previous: number, current: number) {
-      return Math.max(previous, current);
-    });
+    return this.width > 0? this.vectors[0].length: 0;
   }
 
   scale(value: number) {
