@@ -114,6 +114,18 @@ export class Matrix {
     this.length = length;
   }
 
+  get width(): number {
+    return this.vectors.length;
+  }
+
+  get height(): number {
+    return this.vectors.map(function (item: Vector): number {
+      return item.length;
+    }).reduce(function (previous: number, current: number) {
+      return Math.max(previous, current);
+    });
+  }
+
   scale(value: number) {
     return new Matrix(...this.vectors.map(function (vector: Vector) {
       return vector.scale(value);
@@ -131,7 +143,7 @@ export abstract class SquareMatrix extends Matrix {
   constructor(...v: Array<Vector>) {
     super(...v);
 
-    if (this.length != this.vectors.length) {
+    if (this.width != this.height) {
       throw 'Argument error: not a square matrix';
     }
   }
