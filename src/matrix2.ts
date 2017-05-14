@@ -100,30 +100,22 @@ export class Matrix {
     }));
   }
 
-  toString(): string {
-    return this.vectors.map(function (vector: Vector) {
-      return vector.toString();
-    }).join('\n');
-  }
-}
-
-export class SquareMatrix extends Matrix {
-  constructor(...vectors: Vector[]) {
-    super(...vectors);
-
+  get transpose(): Matrix {
     if (this.width != this.height) {
       throw 'Not a square matrix';
     }
-  }
 
-  get transpose(): SquareMatrix {
-    return new SquareMatrix(...this.vectors.map((vector, col) =>
+    return new Matrix(...this.vectors.map((vector, col) =>
       new Vector(...vector.w.map((number, row) => this.vectors[row].w[col]))
     ));
   }
 
-  get adjoint(): SquareMatrix {
-    return new SquareMatrix(...this.vectors.map((vector, col) =>
+  get adjoint(): Matrix {
+    if (this.width != this.height) {
+      throw 'Not a square matrix';
+    }
+
+    return new Matrix(...this.vectors.map((vector, col) =>
       new Vector(...vector.w.map((value, row) => this._getCofactor(col, row)))
     )).transpose;
   }
@@ -132,19 +124,27 @@ export class SquareMatrix extends Matrix {
     let vector = this.width > 0? this.vectors[0]: new Vector();
     let initVal = this.width == 1? vector.w[0]: 0;
 
+    if (this.width != this.height) {
+      throw 'Not a square matrix';
+    }
+
     return vector.w.reduce(
       (prev, current, index) => prev + current * this._getCofactor(0, index),
       initVal
     );
   }
 
-  get inverse(): SquareMatrix {
-    return this.adjoint.scale(1 / this.determinant) as SquareMatrix;
+  get inverse(): Matrix {
+    if (this.width != this.height) {
+      throw 'Not a square matrix';
+    }
+    
+    return this.adjoint.scale(1 / this.determinant) as Matrix;
   }
 
   private _getCofactor(col: number, row: number): number {
     let sign = (col + row) % 2 > 0? -1 : +1;
-    let m = new SquareMatrix(...this.vectors.filter(function (vector, index) {
+    let m = new Matrix(...this.vectors.filter(function (vector, index) {
       return index != col;
     }).map(function (vector, index) {
       return new Vector(...vector.w.filter(function (value, index) {
@@ -153,6 +153,12 @@ export class SquareMatrix extends Matrix {
     }));
 
     return sign * m.determinant;
+  }
+
+  toString(): string {
+    return this.vectors.map(function (vector: Vector) {
+      return vector.toString();
+    }).join('\n');
   }
 }
 
