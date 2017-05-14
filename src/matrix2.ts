@@ -50,14 +50,14 @@ export class Vector {
   // Multiplies [m] by the vector.
   //
   // Returns [m] * [this]
-  transform(m: Matrix): Vector {
+  transform(m: Matrix<Vector>): Vector {
     let z = [];
 
     if (m.width != this.length) {
       throw 'Argument error: invalid matrix width';
     }
 
-    for (let i = 0; i < m.length; i++) {
+    for (let i = 0; i < m.width; i++) {
       let total = 0;
 
       for (let j = 0; j < m.vectors.length; j++) {
@@ -102,13 +102,11 @@ export class Vector {
   }
 }
 
-export class Matrix {
-  readonly vectors: Array<Vector>;
-  readonly length: number;
+export class Matrix<VectorType extends Vector> {
+  readonly vectors: Array<VectorType>;
 
-  constructor (...vectors: Array<Vector>) {
+  constructor (...vectors: Array<VectorType>) {
     this.vectors = vectors;
-    this.length = length;
 
     let height = this.height;
     if (!vectors.every(function (vector: Vector): boolean {
@@ -139,8 +137,10 @@ export class Matrix {
   }
 }
 
-export abstract class SquareMatrix extends Matrix {
-  constructor(...v: Array<Vector>) {
+export abstract class SquareMatrix<VectorType extends Vector>
+  extends Matrix<VectorType> {
+
+  constructor(...v: Array<VectorType>) {
     super(...v);
 
     if (this.width != this.height) {
@@ -148,119 +148,69 @@ export abstract class SquareMatrix extends Matrix {
     }
   }
 
-  abstract get adjoint(): SquareMatrix;
+  abstract get adjoint(): SquareMatrix<VectorType>;
   abstract get determinant(): number;
-  abstract get inverse(): SquareMatrix;
+  abstract get inverse(): SquareMatrix<VectorType>;
 }
 
-export namespace dim2 {
-  export class Point {
-    readonly x: number;
-    readonly y: number;
+const _Point = Point;
+const _Vector = Vector;
+const _Matrix = Matrix;
+const _SquareMatrix = SquareMatrix;
 
+export namespace dim2 {
+  export class Point extends _Point {
     constructor (x: number, y: number) {
-      this.x = x;
-      this.y = y;
+      super(x, y);
     }
 
-    move(vector: Vector): Point {
-      return new Point(this.x + vector.x, this.y + vector.y);
+    get x() {
+      return this.z[0];
+    }
+
+    get y() {
+      return this.z[1];
     }
   }
 
-  export class Vector {
-    readonly x: number;
-    readonly y: number;
-
+  export class Vector extends _Vector {
     constructor(x: number, y: number) {
-      [this.x, this.y] = [x, y];
+      super(x, y);
     }
 
-    static createFromPoints(p0: Point, p1: Point): Vector {
-      let v0 = new Vector(p0.x, p0.y);
-      let v1 = new Vector(p1.x, p1.y);
+    get x() {
+      return this.z[0];
+    }
 
-      return Vector.sub(v0, v1);
+    get y() {
+      return this.z[1];
     }
 
     get opposite(): Vector {
-      return new Vector(-this.x, -this.y);
-    }
-
-    get length(): number {
-      return Math.sqrt(this.x * this.x + this.y * this.y);
-    }
-
-    // Multiplies the vector by a [value].
-    //
-    // Returns [this] * [value]
-    scale(value: number): Vector {
-      return new Vector(value * this.x, value * this.y);
-    }
-
-    // Multiplies [m] by the vector.
-    //
-    // Returns [m] * [this]
-    transform(m: SquareMatrix): Vector {
-      let [v0, v1] = m.vectors;
-
-      return new Vector(
-        v0.x * this.x + v1.x * this.y,
-        v0.y * this.x + v1.y * this.y
-      );
-    }
-
-    // Sum [v0] and [v1]
-    //
-    // Returns [v0] + [v1]
-    static sum(v0: Vector, v1: Vector): Vector {
-      return new Vector(v0.x + v1.x, v0.y + v1.y);
-    }
-
-    // Subtract [v1] from [v0];
-    //
-    // Returns [v0] - [v1]
-    static sub(v0: Vector, v1: Vector): Vector {
-      return Vector.sum(v1, v0.opposite);
+      return this.opposite;
     }
   }
 
-  export class Matrix {
-    readonly vectors: Array<Vector>;
-
+  export class Matrix extends _Matrix<Vector> {
     constructor (...vectors: Array<Vector>) {
-      this.vectors = vectors;
-    }
-
-    // Scales a matrix
-    //
-    // Returns [this] * [value]
-    scale(value: number): Matrix {
-      let vectors = [];
-
-      for (let vector of this.vectors) {
-        vectors.push(vector.scale(value));
-      }
-
-      return new Matrix(...vectors);
+      super(...vectors);
     }
   }
 
-  export class SquareMatrix extends Matrix {
+  export class SquareMatrix extends _SquareMatrix<Vector> {
 
     constructor (v0: Vector, v1: Vector) {
       super(v0, v1);
     }
 
-    // Gets the matrix adjoint.
-    get adj(): SquareMatrix {
+    get adjoint(): SquareMatrix {
       let [v0, v1] = this.vectors;
 
       return new SquareMatrix(new Vector(v1.y, -v0.y), new Vector(-v1.x, v0.x));
     }
 
     // Gets the matrix determinant.
-    get det(): number {
+    get determinant(): number {
       let [v0, v1] = this.vectors;
 
       return  v0.x * v1.y - v1.x * v0.y;
@@ -268,7 +218,7 @@ export namespace dim2 {
 
     // Gets the inverse of the matrix.
     get inverse(): SquareMatrix {
-      return this.adj.scale(1 / this.det) as SquareMatrix;
+      return this.adjoint.scale(1 / this.determinant) as SquareMatrix;
     }
   }
 
@@ -299,11 +249,13 @@ export namespace dim2 {
     }
 
     static getIntersection(l0: Line, l1: Line): Point {
+      /*
       let m = new SquareMatrix(l0.vector, l1.vector.opposite);
       let v = Vector.createFromPoints(l0.point, l1.point);
       let w = v.transform(m.inverse);
 
-      return l1.point.move(l1.vector.scale(w.y));
+      return l1.point.move(l1.vector.scale(w.y));*/
+      return null;
     }
   }
 }
