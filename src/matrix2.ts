@@ -116,8 +116,16 @@ export class SquareMatrix extends Matrix {
     }
   }
 
+  transpose(): SquareMatrix {
+    return new SquareMatrix(...this.vectors.map((vector, col) =>
+      new Vector(...vector.w.map((number, row) => this.vectors[row].w[col]))
+    ));
+  }
+
   adjoint(): SquareMatrix {
-    return null;
+    return new SquareMatrix(...this.vectors.map((vector, col) =>
+      new Vector(...vector.w.map((value, row) => this._getCofactor(col, row)))
+    ));
   }
 
   determinant(): number {
