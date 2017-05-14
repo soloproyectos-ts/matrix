@@ -130,30 +130,24 @@ export class Matrix {
     return null;
   }
 
-  determinant(): number {
+  determinant(level = 0): number {
     let self = this;
-    let ret = 0;
+    let vector = this.width > 0? this.vectors[0]: new Vector();
+    let initVal = this.width == 1? vector.w[0]: 0;
 
     if (!this.isSquare) {
       throw 'Not a square matrix';
     }
 
-    if (this.width > 0) {
-      let vector = this.vectors[0];
-      let initVal = this.width < 2? vector.w[0]: 0;
+    return vector.w.reduce(
+      function (prev: number, current: number, index: number) {
+        let sign = index % 2 > 0? -1: +1;
+        let adj = self.getAdjoint(0, index);
 
-      ret = vector.w.reduce(
-        function (prev: number, current: number, index: number) {
-          let sign = index % 2 > 0? -1: +1;
-          let adj = self.getAdjoint(0, index);
-
-          return prev + sign * current * adj.determinant();
-        },
-        initVal
-      );
-    }
-
-    return ret;
+        return prev + sign * current * adj.determinant(level + 1);
+      },
+      initVal
+    );
   }
 
   inverse(): Matrix {
