@@ -1,12 +1,12 @@
 export class Point {
-  readonly z: Array<number>;
+  readonly w: Array<number>;
 
-  constructor (...z: Array<number>) {
-    this.z = z;
+  constructor (...w: Array<number>) {
+    this.w = w;
   }
 
   get length(): number {
-    return this.z.length;
+    return this.w.length;
   }
 
   move(vector: Vector): Point {
@@ -14,36 +14,36 @@ export class Point {
       throw 'Argument error: invalid vector size';
     }
 
-    return new Point(...this.z.map(function (z: number, index: number) {
-      return z + vector.z[index];
+    return new Point(...this.w.map(function (w: number, index: number) {
+      return w + vector.w[index];
     }));
   }
 
   toString(): string {
-    return `[${this.z.join(', ')}]`;
+    return `[${this.w.join(', ')}]`;
   }
 }
 
 export class Vector {
-  readonly z: Array<number>;
+  readonly w: Array<number>;
 
-  constructor (...z: Array<number>) {
-    this.z = z;
+  constructor (...w: Array<number>) {
+    this.w = w;
   }
 
   get length(): number {
-    return this.z.length;
+    return this.w.length;
   }
 
   scale(value: number): Vector {
-    return new Vector(...this.z.map(function (z: number) {
-      return value * z;
+    return new Vector(...this.w.map(function (w: number) {
+      return value * w;
     }));
   }
 
   get opposite(): Vector {
-    return new Vector(...this.z.map(function (z: number) {
-      return -z;
+    return new Vector(...this.w.map(function (w: number) {
+      return -w;
     }));
   }
 
@@ -51,7 +51,7 @@ export class Vector {
   //
   // Returns [m] * [this]
   transform(m: Matrix<Vector>): Vector {
-    let z = [];
+    let w = [];
 
     if (m.width != this.length) {
       throw 'Argument error: invalid matrix width';
@@ -61,13 +61,13 @@ export class Vector {
       let total = 0;
 
       for (let j = 0; j < m.vectors.length; j++) {
-        total += m.vectors[j].z[i] * this.z[j];
+        total += m.vectors[j].w[i] * this.w[j];
       }
 
-      z.push(total);
+      w.push(total);
     }
 
-    return new Vector(...z);
+    return new Vector(...w);
   }
 
   // Sums [v0] and [v1]
@@ -78,8 +78,8 @@ export class Vector {
       throw 'Argument error: vectors must have the same size';
     }
 
-    return new Vector(...v0.z.map(function (z: number, index: number) {
-      return z + v1.z[index];
+    return new Vector(...v0.w.map(function (w: number, index: number) {
+      return w + v1.w[index];
     }));
   }
 
@@ -92,13 +92,13 @@ export class Vector {
 
   // Gets the euclidean norm.
   get norm(): number {
-    return Math.sqrt(this.z.reduce(function (total: number, z: number) {
-      return total + z * z;
+    return Math.sqrt(this.w.reduce(function (total: number, w: number) {
+      return total + w * w;
     }));
   }
 
   toString(): string {
-    return `[${this.z.join(', ')}]`;
+    return `[${this.w.join(', ')}]`;
   }
 }
 
@@ -165,11 +165,11 @@ export namespace dim2 {
     }
 
     get x() {
-      return this.z[0];
+      return this.w[0];
     }
 
     get y() {
-      return this.z[1];
+      return this.w[1];
     }
   }
 
@@ -179,11 +179,11 @@ export namespace dim2 {
     }
 
     get x() {
-      return this.z[0];
+      return this.w[0];
     }
 
     get y() {
-      return this.z[1];
+      return this.w[1];
     }
 
     get opposite(): Vector {
