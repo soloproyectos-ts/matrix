@@ -138,7 +138,7 @@ export class Matrix {
     if (this.width != this.height) {
       throw 'Not a square matrix';
     }
-    
+
     return this.adjoint.scale(1 / this.determinant) as Matrix;
   }
 
