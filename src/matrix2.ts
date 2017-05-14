@@ -115,7 +115,9 @@ export class Matrix {
       throw 'Not a square matrix';
     }
 
-    return new Matrix(...this.vectors.map((vector, col) =>
+    return this.width == 1
+      ? new Matrix(new Vector(1))
+      : new Matrix(...this.vectors.map((vector, col) =>
       new Vector(...vector.w.map((value, row) => this._getCofactor(col, row)))
     )).transpose();
   }
