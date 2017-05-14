@@ -94,44 +94,10 @@ export class Matrix {
     return this.width > 0? this.vectors[0].length: 0;
   }
 
-  get isSquare(): boolean {
-    return this.width == this.height;
-  }
-
   scale(value: number) {
     return new Matrix(...this.vectors.map(function (vector: Vector) {
       return vector.scale(value);
     }));
-  }
-
-  adjoint(): Matrix {
-    if (!this.isSquare) {
-      throw 'Not a square matrix';
-    }
-
-    return null;
-  }
-
-  determinant(): number {
-    let vector = this.width > 0? this.vectors[0]: new Vector();
-    let initVal = this.width == 1? vector.w[0]: 0;
-
-    if (!this.isSquare) {
-      throw 'Not a square matrix';
-    }
-
-    return vector.w.reduce(
-      (prev, current, index) => prev + current * this._getCofactor(0, index),
-      initVal
-    );
-  }
-
-  inverse(): Matrix {
-    if (!this.isSquare) {
-      throw 'Not a square matrix';
-    }
-
-    return null;
   }
 
   toString(): string {
@@ -139,14 +105,38 @@ export class Matrix {
       return vector.toString();
     }).join('\n');
   }
+}
+
+export class SquareMatrix extends Matrix {
+  constructor(...vectors: Vector[]) {
+    super(...vectors);
+
+    if (this.width != this.height) {
+      throw 'Not a square matrix';
+    }
+  }
+
+  adjoint(): SquareMatrix {
+    return null;
+  }
+
+  determinant(): number {
+    let vector = this.width > 0? this.vectors[0]: new Vector();
+    let initVal = this.width == 1? vector.w[0]: 0;
+
+    return vector.w.reduce(
+      (prev, current, index) => prev + current * this._getCofactor(0, index),
+      initVal
+    );
+  }
+
+  inverse(): SquareMatrix {
+    return null;
+  }
 
   private _getCofactor(col: number, row: number): number {
-    if (col > this.width - 1 || row > this.width -1) {
-      throw 'Index out of bounds';
-    }
-
     let sign = (col + row) % 2 > 0? -1 : +1;
-    let m = new Matrix(...this.vectors.filter(function (vector, index) {
+    let m = new SquareMatrix(...this.vectors.filter(function (vector, index) {
       return index != col;
     }).map(function (vector, index) {
       return new Vector(...vector.w.filter(function (value, index) {
