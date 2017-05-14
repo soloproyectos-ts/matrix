@@ -94,10 +94,6 @@ export class Matrix {
     return this.width > 0? this.vectors[0].length: 0;
   }
 
-  getValue(col: number, row: number): number {
-    return this.vectors[col].w[row];
-  }
-
   get isSquare(): boolean {
     return this.width == this.height;
   }
@@ -105,20 +101,6 @@ export class Matrix {
   scale(value: number) {
     return new Matrix(...this.vectors.map(function (vector: Vector) {
       return vector.scale(value);
-    }));
-  }
-
-  getAdjoint(col: number, row: number): Matrix {
-    if (col > this.width - 1 || row > this.width -1) {
-      throw 'Index out of bounds';
-    }
-
-    return new Matrix(...this.vectors.filter(function (vector, index) {
-      return index != col;
-    }).map(function (vector, index) {
-      return new Vector(...vector.w.filter(function (value, index) {
-        return index != row;
-      }));
     }));
   }
 
@@ -130,8 +112,7 @@ export class Matrix {
     return null;
   }
 
-  determinant(level = 0): number {
-    let self = this;
+  determinant(): number {
     let vector = this.width > 0? this.vectors[0]: new Vector();
     let initVal = this.width == 1? vector.w[0]: 0;
 
@@ -140,12 +121,7 @@ export class Matrix {
     }
 
     return vector.w.reduce(
-      function (prev: number, current: number, index: number) {
-        let sign = index % 2 > 0? -1: +1;
-        let adj = self.getAdjoint(0, index);
-
-        return prev + sign * current * adj.determinant(level + 1);
-      },
+      (prev, current, index) => prev + current * this._getCofactor(0, index),
       initVal
     );
   }
@@ -162,6 +138,23 @@ export class Matrix {
     return this.vectors.map(function (vector: Vector) {
       return vector.toString();
     }).join('\n');
+  }
+
+  private _getCofactor(col: number, row: number): number {
+    if (col > this.width - 1 || row > this.width -1) {
+      throw 'Index out of bounds';
+    }
+
+    let sign = (col + row) % 2 > 0? -1 : +1;
+    let m = new Matrix(...this.vectors.filter(function (vector, index) {
+      return index != col;
+    }).map(function (vector, index) {
+      return new Vector(...vector.w.filter(function (value, index) {
+        return index != row;
+      }));
+    }));
+
+    return sign * m.determinant();
   }
 }
 
