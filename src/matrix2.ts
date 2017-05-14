@@ -1,30 +1,7 @@
-export class Point {
-  readonly w: Array<number>;
-
-  constructor (...w: Array<number>) {
-    this.w = w;
-  }
-
-  get length(): number {
-    return this.w.length;
-  }
-
-  move(vector: Vector): Point {
-    if (this.length != vector.length) {
-      throw 'Argument error: invalid vector size';
-    }
-
-    return new Point(...this.w.map(function (w: number, index: number) {
-      return w + vector.w[index];
-    }));
-  }
-
-  toString(): string {
-    return `[${this.w.join(', ')}]`;
-  }
-}
-
 export class Vector {
+  // TODO: getValue(col: number): number
+  // TODO: values property?
+  // TODO: w is private?
   readonly w: Array<number>;
 
   constructor (...w: Array<number>) {
@@ -50,11 +27,11 @@ export class Vector {
   // Multiplies [m] by the vector.
   //
   // Returns [m] * [this]
-  transform(m: Matrix<Vector>): Vector {
+  transform(m: Matrix): Vector {
     let w = [];
 
     if (m.width != this.length) {
-      throw 'Argument error: invalid matrix width';
+      throw 'invalid matrix width';
     }
 
     for (let i = 0; i < m.width; i++) {
@@ -75,7 +52,7 @@ export class Vector {
   // Returns [v0] + [v1]
   static sum(v0: Vector, v1: Vector): Vector {
     if (v0.length != v1.length) {
-      throw 'Argument error: vectors must have the same size';
+      throw 'Vectors must have the same size';
     }
 
     return new Vector(...v0.w.map(function (w: number, index: number) {
@@ -90,29 +67,22 @@ export class Vector {
     return Vector.sum(v0, v1.opposite);
   }
 
-  // Gets the euclidean norm.
-  get norm(): number {
-    return Math.sqrt(this.w.reduce(function (total: number, w: number) {
-      return total + w * w;
-    }));
-  }
-
   toString(): string {
     return `[${this.w.join(', ')}]`;
   }
 }
 
-export class Matrix<VectorType extends Vector> {
-  readonly vectors: Array<VectorType>;
+export class Matrix {
+  readonly vectors: Array<Vector>;
 
-  constructor (...vectors: Array<VectorType>) {
+  constructor (...vectors: Array<Vector>) {
     this.vectors = vectors;
 
     let height = this.height;
     if (!vectors.every(function (vector: Vector): boolean {
       return vector.length == height;
     })) {
-      throw 'Argument error: all vectors must have the same length';
+      throw 'All vectors must have the same length';
     };
   }
 
@@ -124,10 +94,74 @@ export class Matrix<VectorType extends Vector> {
     return this.width > 0? this.vectors[0].length: 0;
   }
 
+  getValue(col: number, row: number): number {
+    return this.vectors[col].w[row];
+  }
+
+  get isSquare(): boolean {
+    return this.width == this.height;
+  }
+
   scale(value: number) {
     return new Matrix(...this.vectors.map(function (vector: Vector) {
       return vector.scale(value);
     }));
+  }
+
+  getAdjoint(col: number, row: number): Matrix {
+    if (col > this.width - 1 || row > this.width -1) {
+      throw 'Index out of bounds';
+    }
+
+    return new Matrix(...this.vectors.filter(function (vector, index) {
+      return index != col;
+    }).map(function (vector, index) {
+      return new Vector(...vector.w.filter(function (value, index) {
+        return index != row;
+      }));
+    }));
+  }
+
+  adjoint(): Matrix {
+    if (!this.isSquare) {
+      throw 'Not a square matrix';
+    }
+
+    return null;
+  }
+
+  determinant(): number {
+    let self = this;
+    let ret = 0;
+
+    if (!this.isSquare) {
+      throw 'Not a square matrix';
+    }
+
+    if (this.width > 0) {
+      let vector = this.vectors[0];
+      let initVal = this.width < 2? vector.w[0]: 0;
+
+      ret = vector.w.reduce(
+        function (prev: number, current: number, index: number) {
+          let sign = index % 2 > 0? -1: +1;
+          let adj = self.getAdjoint(0, index);
+
+          return prev + sign * current * adj.determinant();
+        },
+        initVal
+      );
+    }
+
+    return ret;
+  }
+
+  inverse(): Matrix {
+    if (!this.isSquare) {
+      throw 'Not a square matrix';
+    }
+
+    return null;
   }
 
   toString(): string {
@@ -137,23 +171,8 @@ export class Matrix<VectorType extends Vector> {
   }
 }
 
-export abstract class SquareMatrix<VectorType extends Vector>
-  extends Matrix<VectorType> {
-
-  constructor(...v: Array<VectorType>) {
-    super(...v);
-
-    if (this.width != this.height) {
-      throw 'Argument error: not a square matrix';
-    }
-  }
-
-  abstract get adjoint(): SquareMatrix<VectorType>;
-  abstract get determinant(): number;
-  abstract get inverse(): SquareMatrix<VectorType>;
-}
-
-const _Point = Point;
+/*
+const _Point = Vector;
 const _Vector = Vector;
 const _Matrix = Matrix;
 const _SquareMatrix = SquareMatrix;
@@ -249,13 +268,13 @@ export namespace dim2 {
     }
 
     static getIntersection(l0: Line, l1: Line): Point {
-      /*
       let m = new SquareMatrix(l0.vector, l1.vector.opposite);
       let v = Vector.createFromPoints(l0.point, l1.point);
       let w = v.transform(m.inverse);
 
-      return l1.point.move(l1.vector.scale(w.y));*/
+      return l1.point.sum(l1.vector.scale(w.y));
       return null;
     }
   }
 }
+*/
