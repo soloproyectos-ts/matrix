@@ -100,7 +100,7 @@ export class Matrix {
     }));
   }
 
-  get transpose(): Matrix {
+  transpose(): Matrix {
     if (this.width != this.height) {
       throw 'Not a square matrix';
     }
@@ -110,17 +110,17 @@ export class Matrix {
     ));
   }
 
-  get adjoint(): Matrix {
+  adjoint(): Matrix {
     if (this.width != this.height) {
       throw 'Not a square matrix';
     }
 
     return new Matrix(...this.vectors.map((vector, col) =>
       new Vector(...vector.w.map((value, row) => this._getCofactor(col, row)))
-    )).transpose;
+    )).transpose();
   }
 
-  get determinant(): number {
+  determinant(): number {
     let vector = this.width > 0? this.vectors[0]: new Vector();
     let initVal = this.width == 1? vector.w[0]: 0;
 
@@ -134,12 +134,18 @@ export class Matrix {
     );
   }
 
-  get inverse(): Matrix {
+  inverse(): Matrix {
     if (this.width != this.height) {
       throw 'Not a square matrix';
     }
 
-    return this.adjoint.scale(1 / this.determinant) as Matrix;
+    return this.adjoint().scale(1 / this.determinant()) as Matrix;
+  }
+
+  toString(): string {
+    return this.vectors.map(function (vector: Vector) {
+      return vector.toString();
+    }).join('\n');
   }
 
   private _getCofactor(col: number, row: number): number {
@@ -152,13 +158,7 @@ export class Matrix {
       }));
     }));
 
-    return sign * m.determinant;
-  }
-
-  toString(): string {
-    return this.vectors.map(function (vector: Vector) {
-      return vector.toString();
-    }).join('\n');
+    return sign * m.determinant();
   }
 }
 
