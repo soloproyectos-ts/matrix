@@ -139,7 +139,7 @@ export class SquareMatrix extends Matrix {
   }
 
   get inverse(): SquareMatrix {
-    return null;
+    return this.adjoint.scale(1 / this.determinant) as SquareMatrix;
   }
 
   private _getCofactor(col: number, row: number): number {
