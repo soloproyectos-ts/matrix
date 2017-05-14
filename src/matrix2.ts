@@ -125,7 +125,7 @@ export class SquareMatrix extends Matrix {
   adjoint(): SquareMatrix {
     return new SquareMatrix(...this.vectors.map((vector, col) =>
       new Vector(...vector.w.map((value, row) => this._getCofactor(col, row)))
-    ));
+    )).transpose();
   }
 
   determinant(): number {
