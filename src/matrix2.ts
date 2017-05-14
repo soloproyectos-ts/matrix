@@ -116,19 +116,19 @@ export class SquareMatrix extends Matrix {
     }
   }
 
-  transpose(): SquareMatrix {
+  get transpose(): SquareMatrix {
     return new SquareMatrix(...this.vectors.map((vector, col) =>
       new Vector(...vector.w.map((number, row) => this.vectors[row].w[col]))
     ));
   }
 
-  adjoint(): SquareMatrix {
+  get adjoint(): SquareMatrix {
     return new SquareMatrix(...this.vectors.map((vector, col) =>
       new Vector(...vector.w.map((value, row) => this._getCofactor(col, row)))
-    )).transpose();
+    )).transpose;
   }
 
-  determinant(): number {
+  get determinant(): number {
     let vector = this.width > 0? this.vectors[0]: new Vector();
     let initVal = this.width == 1? vector.w[0]: 0;
 
@@ -138,7 +138,7 @@ export class SquareMatrix extends Matrix {
     );
   }
 
-  inverse(): SquareMatrix {
+  get inverse(): SquareMatrix {
     return null;
   }
 
@@ -152,7 +152,7 @@ export class SquareMatrix extends Matrix {
       }));
     }));
 
-    return sign * m.determinant();
+    return sign * m.determinant;
   }
 }
 
