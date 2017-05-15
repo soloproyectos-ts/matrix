@@ -31,6 +31,7 @@ export class Vector {
     }));
   }
 
+  // TODO: replace sub by subtract
   static sub(v0: Vector, v1: Vector): Vector {
     return Vector.sum(v0, v1.opposite());
   }
@@ -69,13 +70,18 @@ export class Matrix {
   }
 
   transpose(): Matrix {
-    if (this.width != this.height) {
-      throw 'Not a square matrix';
+    let height = this.height;
+    let width = this.width;
+    let vectors = [];
+    for (let i = 0; i < height; i++) {
+      let values = [];
+      for (let j = 0; j < width; j++) {
+        values.push(this.vectors[j].w[i]);
+      }
+      vectors.push(new Vector(...values));
     }
 
-    return new Matrix(...this.vectors.map((vector, col) =>
-      new Vector(...vector.w.map((number, row) => this.vectors[row].w[col]))
-    ));
+    return new Matrix(...vectors);
   }
 
   adjoint(): Matrix {
