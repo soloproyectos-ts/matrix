@@ -55,6 +55,18 @@ export class Matrix {
     };
   }
 
+  static multiply(m0: Matrix, m1: Matrix): Matrix {
+    if (m0.width != m1.height) {
+      throw 'Invalid matrix multiplication';
+    }
+
+    return new Matrix(...m0.transpose().vectors.map((v0) =>
+      new Vector(...m1.vectors.map((v1) =>
+        v0.w.reduce((prev, current, k) => prev + current * v1.w[k], 0)
+      ))
+    ));
+  }
+
   get width(): number {
     return this.vectors.length;
   }
@@ -73,7 +85,7 @@ export class Matrix {
     let height = this.height;
     let width = this.width;
     let vectors = [];
-    
+
     for (let i = 0; i < height; i++) {
       let values = [];
       for (let j = 0; j < width; j++) {
