@@ -124,7 +124,7 @@ export class Matrix {
 
   determinant(): number {
     let vector = this.width > 0? this.vectors[0]: new Vector();
-    let initVal = this.width == 1? vector.w[0]: 0;
+    let initVal = this.width > 0? 0: 1;
 
     if (this.width != this.height) {
       throw 'Not a square matrix';
