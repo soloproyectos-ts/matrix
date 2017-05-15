@@ -21,6 +21,7 @@ export class Vector {
     }));
   }
 
+  // TODO: remove static
   static sum(v0: Vector, v1: Vector): Vector {
     if (v0.length != v1.length) {
       throw 'Vectors must have the same size';
@@ -31,6 +32,7 @@ export class Vector {
     }));
   }
 
+  // TODO: remove static
   static sub(v0: Vector, v1: Vector): Vector {
     return Vector.sum(v0, v1.opposite());
   }
@@ -118,22 +120,22 @@ export class Matrix {
     return this.adjoint().scale(1 / this.determinant()) as Matrix;
   }
 
+  multiply(m: Matrix): Matrix {
+    if (this.width != m.height) {
+      throw 'Invalid matrix multiplication';
+    }
+
+    return new Matrix(...this.transpose().vectors.map((v0) =>
+      new Vector(...m.vectors.map((v1) =>
+        v0.w.reduce((prev, current, k) => prev + current * v1.w[k], 0)
+      ))
+    ));
+  }
+
   toString(): string {
     return this.vectors.map(function (vector: Vector) {
       return vector.toString();
     }).join('\n');
-  }
-
-  static multiply(m0: Matrix, m1: Matrix): Matrix {
-    if (m0.width != m1.height) {
-      throw 'Invalid matrix multiplication';
-    }
-
-    return new Matrix(...m0.transpose().vectors.map((v0) =>
-      new Vector(...m1.vectors.map((v1) =>
-        v0.w.reduce((prev, current, k) => prev + current * v1.w[k], 0)
-      ))
-    ));
   }
 
   private _getCofactor(col: number, row: number): number {
