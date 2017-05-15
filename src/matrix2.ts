@@ -31,7 +31,6 @@ export class Vector {
     }));
   }
 
-  // TODO: replace sub by subtract
   static sub(v0: Vector, v1: Vector): Vector {
     return Vector.sum(v0, v1.opposite());
   }
