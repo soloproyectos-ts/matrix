@@ -21,20 +21,18 @@ export class Vector {
     }));
   }
 
-  // TODO: remove static
-  static sum(v0: Vector, v1: Vector): Vector {
-    if (v0.length != v1.length) {
+  sum(vector: Vector): Vector {
+    if (this.length != vector.length) {
       throw 'Vectors must have the same size';
     }
 
-    return new Vector(...v0.w.map(function (w: number, index: number) {
-      return w + v1.w[index];
+    return new Vector(...this.w.map(function (w: number, index: number) {
+      return w + vector.w[index];
     }));
   }
 
-  // TODO: remove static
-  static sub(v0: Vector, v1: Vector): Vector {
-    return Vector.sum(v0, v1.opposite());
+  sub(vector: Vector): Vector {
+    return this.sum(vector.opposite());
   }
 
   toString(): string {
