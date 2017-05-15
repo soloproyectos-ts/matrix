@@ -1,7 +1,7 @@
 export class Vector {
-  readonly w: Array<number>;
+  readonly w: number[];
 
-  constructor (...w: Array<number>) {
+  constructor (...w: number[]) {
     this.w = w;
   }
 
@@ -41,9 +41,9 @@ export class Vector {
 }
 
 export class Matrix {
-  readonly vectors: Array<Vector>;
+  readonly vectors: Vector[];
 
-  constructor (...vectors: Array<Vector>) {
+  constructor (...vectors: Vector[]) {
     this.vectors = vectors;
 
     let height = this.height;
