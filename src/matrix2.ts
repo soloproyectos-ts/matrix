@@ -9,7 +9,7 @@ export class Vector {
     return this.w.length;
   }
 
-  get opposite(): Vector {
+  opposite(): Vector {
     return new Vector(...this.w.map(function (w: number) {
       return -w;
     }));
@@ -32,7 +32,7 @@ export class Vector {
   }
 
   static sub(v0: Vector, v1: Vector): Vector {
-    return Vector.sum(v0, v1.opposite);
+    return Vector.sum(v0, v1.opposite());
   }
 
   toString(): string {
