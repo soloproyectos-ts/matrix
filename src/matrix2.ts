@@ -73,6 +73,7 @@ export class Matrix {
     let height = this.height;
     let width = this.width;
     let vectors = [];
+    
     for (let i = 0; i < height; i++) {
       let values = [];
       for (let j = 0; j < width; j++) {
