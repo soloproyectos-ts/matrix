@@ -147,20 +147,12 @@ export class SquareMatrix extends Matrix {
   }
 
   adjoint(): SquareMatrix {
-    if (this.width != this.height) {
-      throw 'Not a square matrix';
-    }
-
     return new SquareMatrix(...this.vectors.map((vector, col) =>
       new Vector(...vector.coordinates.map((value, row) =>
         this._getCofactor(col, row))))).transpose();
   }
 
   determinant(): number {
-    if (this.width != this.height) {
-      throw 'Not a square matrix';
-    }
-
     let vector = this.width > 0? this.vectors[0]: new Vector();
     let initVal = this.width > 0? 0: 1;
 
