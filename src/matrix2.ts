@@ -1,22 +1,30 @@
 export class Vector {
-  readonly coordinates: number[];
+  private _coordinates: number[];
 
   constructor (...coordinates: number[]) {
-    this.coordinates = coordinates;
+    this._coordinates = coordinates;
+  }
+
+  get coordinates(): number[] {
+    return this._coordinates.map((value) => value);
   }
 
   get length(): number {
-    return this.coordinates.length;
+    return this._coordinates.length;
+  }
+
+  getCoordinate(index: number): number {
+    return this._coordinates[index];
   }
 
   opposite(): Vector {
-    return new Vector(...this.coordinates.map(function (w: number) {
+    return new Vector(...this._coordinates.map(function (w: number) {
       return -w;
     }));
   }
 
   scale(value: number): Vector {
-    return new Vector(...this.coordinates.map(function (w: number) {
+    return new Vector(...this._coordinates.map(function (w: number) {
       return value * w;
     }));
   }
@@ -26,8 +34,8 @@ export class Vector {
       throw 'Vectors must have the same size';
     }
 
-    return new Vector(...this.coordinates.map((w: number, index: number) =>
-      w + vector.coordinates[index]
+    return new Vector(...this._coordinates.map((w: number, index: number) =>
+      w + vector._coordinates[index]
     ));
   }
 
@@ -36,7 +44,7 @@ export class Vector {
   }
 
   toString(): string {
-    return `[${this.coordinates.join(', ')}]`;
+    return `[${this._coordinates.join(', ')}]`;
   }
 }
 
@@ -74,11 +82,11 @@ export class Matrix {
     let vectors = [];
 
     for (let i = 0; i < height; i++) {
-      let coordinates = [];
+      let coords = [];
       for (let j = 0; j < width; j++) {
-        coordinates.push(this.vectors[j].coordinates[i]);
+        coords.push(this.vectors[j].getCoordinate(i));
       }
-      vectors.push(new Vector(...coordinates));
+      vectors.push(new Vector(...coords));
     }
 
     return new Matrix(...vectors);
@@ -92,7 +100,7 @@ export class Matrix {
     return new Matrix(...this.transpose().vectors.map((v0) =>
       new Vector(...m.vectors.map((v1) =>
         v0.coordinates.reduce((prev, current, k) =>
-          prev + current * v1.coordinates[k], 0)
+          prev + current * v1.getCoordinate(k), 0)
       ))
     ));
   }
