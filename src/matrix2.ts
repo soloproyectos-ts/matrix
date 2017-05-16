@@ -1,22 +1,22 @@
 export class Vector {
-  readonly w: number[];
+  readonly values: number[];
 
   constructor (...w: number[]) {
-    this.w = w;
+    this.values = w;
   }
 
   get length(): number {
-    return this.w.length;
+    return this.values.length;
   }
 
   opposite(): Vector {
-    return new Vector(...this.w.map(function (w: number) {
+    return new Vector(...this.values.map(function (w: number) {
       return -w;
     }));
   }
 
   scale(value: number): Vector {
-    return new Vector(...this.w.map(function (w: number) {
+    return new Vector(...this.values.map(function (w: number) {
       return value * w;
     }));
   }
@@ -26,8 +26,8 @@ export class Vector {
       throw 'Vectors must have the same size';
     }
 
-    return new Vector(...this.w.map(function (w: number, index: number) {
-      return w + vector.w[index];
+    return new Vector(...this.values.map(function (w: number, index: number) {
+      return w + vector.values[index];
     }));
   }
 
@@ -36,7 +36,7 @@ export class Vector {
   }
 
   toString(): string {
-    return `[${this.w.join(', ')}]`;
+    return `[${this.values.join(', ')}]`;
   }
 }
 
@@ -76,7 +76,7 @@ export class Matrix {
     for (let i = 0; i < height; i++) {
       let values = [];
       for (let j = 0; j < width; j++) {
-        values.push(this.vectors[j].w[i]);
+        values.push(this.vectors[j].values[i]);
       }
       vectors.push(new Vector(...values));
     }
@@ -91,7 +91,7 @@ export class Matrix {
 
     return new Matrix(...this.transpose().vectors.map((v0) =>
       new Vector(...m.vectors.map((v1) =>
-        v0.w.reduce((prev, current, k) => prev + current * v1.w[k], 0)
+        v0.values.reduce((prev, current, k) => prev + current * v1.values[k], 0)
       ))
     ));
   }
@@ -102,7 +102,7 @@ export class Matrix {
     }
 
     return new Matrix(...this.vectors.map((vector, col) =>
-      new Vector(...vector.w.map((value, row) =>
+      new Vector(...vector.values.map((value, row) =>
         this._getCofactor(col, row))))).transpose();
   }
 
@@ -113,8 +113,8 @@ export class Matrix {
 
     let vector = this.width > 0? this.vectors[0]: new Vector();
     let initVal = this.width > 0? 0: 1;
-    
-    return vector.w.reduce(
+
+    return vector.values.reduce(
       (prev, current, index) => prev + current * this._getCofactor(0, index),
       initVal
     );
@@ -129,7 +129,7 @@ export class Matrix {
     let m = new Matrix(...this.vectors.filter(function (vector, index) {
       return index != col;
     }).map(function (vector, index) {
-      return new Vector(...vector.w.filter(function (value, index) {
+      return new Vector(...vector.values.filter(function (value, index) {
         return index != row;
       }));
     }));
