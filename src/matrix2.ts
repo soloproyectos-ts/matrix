@@ -1,22 +1,22 @@
 export class Vector {
-  readonly values: number[];
+  readonly coordinates: number[];
 
-  constructor (...w: number[]) {
-    this.values = w;
+  constructor (...coordinates: number[]) {
+    this.coordinates = coordinates;
   }
 
   get length(): number {
-    return this.values.length;
+    return this.coordinates.length;
   }
 
   opposite(): Vector {
-    return new Vector(...this.values.map(function (w: number) {
+    return new Vector(...this.coordinates.map(function (w: number) {
       return -w;
     }));
   }
 
   scale(value: number): Vector {
-    return new Vector(...this.values.map(function (w: number) {
+    return new Vector(...this.coordinates.map(function (w: number) {
       return value * w;
     }));
   }
@@ -26,9 +26,9 @@ export class Vector {
       throw 'Vectors must have the same size';
     }
 
-    return new Vector(...this.values.map(function (w: number, index: number) {
-      return w + vector.values[index];
-    }));
+    return new Vector(...this.coordinates.map((w: number, index: number) =>
+      w + vector.coordinates[index]
+    ));
   }
 
   subtract(vector: Vector): Vector {
@@ -36,7 +36,7 @@ export class Vector {
   }
 
   toString(): string {
-    return `[${this.values.join(', ')}]`;
+    return `[${this.coordinates.join(', ')}]`;
   }
 }
 
@@ -74,11 +74,11 @@ export class Matrix {
     let vectors = [];
 
     for (let i = 0; i < height; i++) {
-      let values = [];
+      let coordinates = [];
       for (let j = 0; j < width; j++) {
-        values.push(this.vectors[j].values[i]);
+        coordinates.push(this.vectors[j].coordinates[i]);
       }
-      vectors.push(new Vector(...values));
+      vectors.push(new Vector(...coordinates));
     }
 
     return new Matrix(...vectors);
@@ -91,7 +91,8 @@ export class Matrix {
 
     return new Matrix(...this.transpose().vectors.map((v0) =>
       new Vector(...m.vectors.map((v1) =>
-        v0.values.reduce((prev, current, k) => prev + current * v1.values[k], 0)
+        v0.coordinates.reduce((prev, current, k) =>
+          prev + current * v1.coordinates[k], 0)
       ))
     ));
   }
@@ -102,7 +103,7 @@ export class Matrix {
     }
 
     return new Matrix(...this.vectors.map((vector, col) =>
-      new Vector(...vector.values.map((value, row) =>
+      new Vector(...vector.coordinates.map((value, row) =>
         this._getCofactor(col, row))))).transpose();
   }
 
@@ -114,7 +115,7 @@ export class Matrix {
     let vector = this.width > 0? this.vectors[0]: new Vector();
     let initVal = this.width > 0? 0: 1;
 
-    return vector.values.reduce(
+    return vector.coordinates.reduce(
       (prev, current, index) => prev + current * this._getCofactor(0, index),
       initVal
     );
@@ -129,7 +130,7 @@ export class Matrix {
     let m = new Matrix(...this.vectors.filter(function (vector, index) {
       return index != col;
     }).map(function (vector, index) {
-      return new Vector(...vector.values.filter(function (value, index) {
+      return new Vector(...vector.coordinates.filter(function (value, index) {
         return index != row;
       }));
     }));
