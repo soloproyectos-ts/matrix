@@ -103,7 +103,7 @@ export class Matrix {
   }
 }
 
-class SquareMatrix extends Matrix {
+export class SquareMatrix extends Matrix {
   constructor(...vectors: Vector[]) {
     super(...vectors);
 
