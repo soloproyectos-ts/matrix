@@ -1,4 +1,25 @@
-export class Vector {
+export interface Positionable {
+  readonly coordinates: number[];
+  readonly length: number;
+}
+
+export class Point implements Positionable {
+  readonly coordinates: number[];
+
+  constructor (...coordinates: number[]) {
+    this.coordinates = coordinates;
+  }
+
+  get length(): number {
+    return this.coordinates.length;
+  }
+
+  toString(): string {
+    return `[${this.coordinates.join(', ')}]`;
+  }
+}
+
+export class Vector implements Positionable {
   readonly coordinates: number[];
 
   constructor (...coordinates: number[]) {
