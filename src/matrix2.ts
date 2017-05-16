@@ -84,38 +84,6 @@ export class Matrix {
     return new Matrix(...vectors);
   }
 
-  adjoint(): Matrix {
-    if (this.width != this.height) {
-      throw 'Not a square matrix';
-    }
-
-    return new Matrix(...this.vectors.map((vector, col) =>
-      new Vector(...vector.w.map((value, row) => this._getCofactor(col, row)))
-    )).transpose();
-  }
-
-  determinant(): number {
-    let vector = this.width > 0? this.vectors[0]: new Vector();
-    let initVal = this.width > 0? 0: 1;
-
-    if (this.width != this.height) {
-      throw 'Not a square matrix';
-    }
-
-    return vector.w.reduce(
-      (prev, current, index) => prev + current * this._getCofactor(0, index),
-      initVal
-    );
-  }
-
-  inverse(): Matrix {
-    if (this.width != this.height) {
-      throw 'Not a square matrix';
-    }
-
-    return this.adjoint().scale(1 / this.determinant()) as Matrix;
-  }
-
   multiply(m: Matrix): Matrix {
     if (this.width != m.height) {
       throw 'Invalid matrix multiplication';
@@ -133,10 +101,53 @@ export class Matrix {
       return vector.toString();
     }).join('\n');
   }
+}
+
+class SquareMatrix extends Matrix {
+  constructor(...vectors: Vector[]) {
+    super(...vectors);
+
+    if (this.width != this.height) {
+      throw 'Not a square matrix';
+    }
+  }
+
+  static createFromMatrix(m: Matrix) {
+    return new SquareMatrix(...m.vectors);
+  }
+
+  adjoint(): SquareMatrix {
+    return SquareMatrix.createFromMatrix(
+      new SquareMatrix(
+        ...this.vectors.map(
+          (vector, col) =>
+            new Vector(
+              ...vector.w.map((value, row) => this._getCofactor(col, row))
+            )
+        )
+      ).transpose()
+    );
+  }
+
+  determinant(): number {
+    let vector = this.width > 0? this.vectors[0]: new Vector();
+    let initVal = this.width > 0? 0: 1;
+
+    return vector.w.reduce(
+      (prev, current, index) => prev + current * this._getCofactor(0, index),
+      initVal
+    );
+  }
+
+  inverse(): SquareMatrix {
+    return SquareMatrix.createFromMatrix(
+      this.adjoint().scale(1 / this.determinant())
+    );
+  }
 
   private _getCofactor(col: number, row: number): number {
     let sign = (col + row) % 2 > 0? -1 : +1;
-    let m = new Matrix(...this.vectors.filter(function (vector, index) {
+    let m = new SquareMatrix(...this.vectors.filter(function (vector, index) {
       return index != col;
     }).map(function (vector, index) {
       return new Vector(...vector.w.filter(function (value, index) {
