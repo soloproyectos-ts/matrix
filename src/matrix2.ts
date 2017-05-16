@@ -112,8 +112,8 @@ export class Matrix {
 
     return new Matrix(...this.transpose().vectors.map((v0) =>
       new Vector(...m.vectors.map((v1) =>
-        v0.coordinates.reduce((prev, current, k) =>
-          prev + current * v1.coordinates[k], 0)
+        v0.coordinates.reduce((prev, current, i) =>
+          prev + current * v1.coordinates[i], 0)
       ))
     ));
   }
