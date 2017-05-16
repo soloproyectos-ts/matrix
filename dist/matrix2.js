@@ -1,48 +1,65 @@
 define(["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    var Point = (function () {
+        function Point() {
+            var coordinates = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                coordinates[_i] = arguments[_i];
+            }
+            this.coordinates = coordinates;
+        }
+        Object.defineProperty(Point.prototype, "length", {
+            get: function () {
+                return this.coordinates.length;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Point.prototype.toString = function () {
+            return "[" + this.coordinates.join(', ') + "]";
+        };
+        return Point;
+    }());
+    exports.Point = Point;
     var Vector = (function () {
         function Vector() {
-            var w = [];
+            var coordinates = [];
             for (var _i = 0; _i < arguments.length; _i++) {
-                w[_i] = arguments[_i];
+                coordinates[_i] = arguments[_i];
             }
-            this.w = w;
+            this.coordinates = coordinates;
         }
         Object.defineProperty(Vector.prototype, "length", {
             get: function () {
-                return this.w.length;
+                return this.coordinates.length;
             },
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(Vector.prototype, "opposite", {
-            get: function () {
-                return new (Vector.bind.apply(Vector, [void 0].concat(this.w.map(function (w) {
-                    return -w;
-                }))))();
-            },
-            enumerable: true,
-            configurable: true
-        });
+        Vector.prototype.opposite = function () {
+            return new (Vector.bind.apply(Vector, [void 0].concat(this.coordinates.map(function (w) {
+                return -w;
+            }))))();
+        };
         Vector.prototype.scale = function (value) {
-            return new (Vector.bind.apply(Vector, [void 0].concat(this.w.map(function (w) {
+            return new (Vector.bind.apply(Vector, [void 0].concat(this.coordinates.map(function (w) {
                 return value * w;
             }))))();
         };
-        Vector.sum = function (v0, v1) {
-            if (v0.length != v1.length) {
+        Vector.prototype.sum = function (vector) {
+            if (this.length != vector.length) {
                 throw 'Vectors must have the same size';
             }
-            return new (Vector.bind.apply(Vector, [void 0].concat(v0.w.map(function (w, index) {
-                return w + v1.w[index];
+            return new (Vector.bind.apply(Vector, [void 0].concat(this.coordinates.map(function (w, index) {
+                return w + vector.coordinates[index];
             }))))();
         };
-        Vector.sub = function (v0, v1) {
-            return Vector.sum(v0, v1.opposite);
+        Vector.prototype.subtract = function (vector) {
+            return this.sum(vector.opposite());
         };
         Vector.prototype.toString = function () {
-            return "[" + this.w.join(', ') + "]";
+            return "[" + this.coordinates.join(', ') + "]";
         };
         return Vector;
     }());
@@ -82,12 +99,28 @@ define(["require", "exports"], function (require, exports) {
             }))))();
         };
         Matrix.prototype.transpose = function () {
-            var _this = this;
-            if (this.width != this.height) {
-                throw 'Not a square matrix';
+            var height = this.height;
+            var width = this.width;
+            var vectors = [];
+            for (var i = 0; i < height; i++) {
+                var coords = [];
+                for (var j = 0; j < width; j++) {
+                    coords.push(this.vectors[j].coordinates[i]);
+                }
+                vectors.push(new (Vector.bind.apply(Vector, [void 0].concat(coords)))());
             }
-            return new (Matrix.bind.apply(Matrix, [void 0].concat(this.vectors.map(function (vector, col) {
-                return new (Vector.bind.apply(Vector, [void 0].concat(vector.w.map(function (number, row) { return _this.vectors[row].w[col]; }))))();
+            return new (Matrix.bind.apply(Matrix, [void 0].concat(vectors)))();
+        };
+        Matrix.prototype.multiply = function (m) {
+            if (this.width != m.height) {
+                throw 'Invalid matrix multiplication';
+            }
+            return new (Matrix.bind.apply(Matrix, [void 0].concat(this.transpose().vectors.map(function (v0) {
+                return new (Vector.bind.apply(Vector, [void 0].concat(m.vectors.map(function (v1) {
+                    return v0.coordinates.reduce(function (prev, current, i) {
+                        return prev + current * v1.coordinates[i];
+                    }, 0);
+                }))))();
             }))))();
         };
         Matrix.prototype.adjoint = function () {
@@ -95,42 +128,39 @@ define(["require", "exports"], function (require, exports) {
             if (this.width != this.height) {
                 throw 'Not a square matrix';
             }
-            return this.width == 1
-                ? new Matrix(new Vector(1))
-                : new (Matrix.bind.apply(Matrix, [void 0].concat(this.vectors.map(function (vector, col) {
-                    return new (Vector.bind.apply(Vector, [void 0].concat(vector.w.map(function (value, row) { return _this._getCofactor(col, row); }))))();
-                }))))().transpose();
+            return new (Matrix.bind.apply(Matrix, [void 0].concat(this.vectors.map(function (vector, col) {
+                return new (Vector.bind.apply(Vector, [void 0].concat(vector.coordinates.map(function (value, row) {
+                    return _this._getCofactor(col, row);
+                }))))();
+            }))))().transpose();
         };
         Matrix.prototype.determinant = function () {
             var _this = this;
+            if (this.width != this.height) {
+                throw 'Not a square matrix';
+            }
             var vector = this.width > 0 ? this.vectors[0] : new Vector();
             var initVal = this.width > 0 ? 0 : 1;
-            if (this.width != this.height) {
-                throw 'Not a square matrix';
-            }
-            return vector.w.reduce(function (prev, current, index) { return prev + current * _this._getCofactor(0, index); }, initVal);
+            return vector.coordinates.reduce(function (prev, current, index) { return prev + current * _this._getCofactor(0, index); }, initVal);
         };
         Matrix.prototype.inverse = function () {
-            if (this.width != this.height) {
-                throw 'Not a square matrix';
-            }
             return this.adjoint().scale(1 / this.determinant());
-        };
-        Matrix.prototype.toString = function () {
-            return this.vectors.map(function (vector) {
-                return vector.toString();
-            }).join('\n');
         };
         Matrix.prototype._getCofactor = function (col, row) {
             var sign = (col + row) % 2 > 0 ? -1 : +1;
             var m = new (Matrix.bind.apply(Matrix, [void 0].concat(this.vectors.filter(function (vector, index) {
                 return index != col;
             }).map(function (vector, index) {
-                return new (Vector.bind.apply(Vector, [void 0].concat(vector.w.filter(function (value, index) {
+                return new (Vector.bind.apply(Vector, [void 0].concat(vector.coordinates.filter(function (value, index) {
                     return index != row;
                 }))))();
             }))))();
             return sign * m.determinant();
+        };
+        Matrix.prototype.toString = function () {
+            return this.vectors.map(function (vector) {
+                return vector.toString();
+            }).join('\n');
         };
         return Matrix;
     }());

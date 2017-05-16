@@ -1,23 +1,34 @@
-export declare class Vector {
-    readonly w: Array<number>;
-    constructor(...w: Array<number>);
+export interface Positionable {
+    readonly coordinates: number[];
     readonly length: number;
-    readonly opposite: Vector;
+}
+export declare class Point implements Positionable {
+    readonly coordinates: number[];
+    constructor(...coordinates: number[]);
+    readonly length: number;
+    toString(): string;
+}
+export declare class Vector implements Positionable {
+    readonly coordinates: number[];
+    constructor(...coordinates: number[]);
+    readonly length: number;
+    opposite(): Vector;
     scale(value: number): Vector;
-    static sum(v0: Vector, v1: Vector): Vector;
-    static sub(v0: Vector, v1: Vector): Vector;
+    sum(vector: Vector): Vector;
+    subtract(vector: Vector): Vector;
     toString(): string;
 }
 export declare class Matrix {
-    readonly vectors: Array<Vector>;
-    constructor(...vectors: Array<Vector>);
+    readonly vectors: Vector[];
+    constructor(...vectors: Vector[]);
     readonly width: number;
     readonly height: number;
     scale(value: number): Matrix;
     transpose(): Matrix;
+    multiply(m: Matrix): Matrix;
     adjoint(): Matrix;
     determinant(): number;
     inverse(): Matrix;
-    toString(): string;
     private _getCofactor(col, row);
+    toString(): string;
 }
