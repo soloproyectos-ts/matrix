@@ -83,7 +83,7 @@ export class Matrix {
     return this.width > 0? this.vectors[0].length: 0;
   }
 
-  scale(value: number) {
+  scale(value: number): Matrix {
     return new Matrix(...this.vectors.map(function (vector: Vector) {
       return vector.scale(value);
     }));
@@ -118,12 +118,40 @@ export class Matrix {
     ));
   }
 
-  adjoint(): Matrix {
+  toString(): string {
+    return this.vectors.map(function (vector: Vector) {
+      return vector.toString();
+    }).join('\n');
+  }
+}
+
+export class SquareMatrix extends Matrix {
+  constructor (...vectors: Vector[]) {
+    super(...vectors);
+
+    if (this.width != this.height) {
+      throw 'Not a square matrix';
+    }
+  }
+
+  static createFromMatrix(m: Matrix): SquareMatrix {
+    return new SquareMatrix(...m.vectors);
+  }
+
+  scale(value: number): SquareMatrix {
+    return SquareMatrix.createFromMatrix(super.scale(value));
+  }
+
+  transpose(): SquareMatrix {
+    return SquareMatrix.createFromMatrix(super.transpose());
+  }
+
+  adjoint(): SquareMatrix {
     if (this.width != this.height) {
       throw 'Not a square matrix';
     }
 
-    return new Matrix(...this.vectors.map((vector, col) =>
+    return new SquareMatrix(...this.vectors.map((vector, col) =>
       new Vector(...vector.coordinates.map((value, row) =>
         this._getCofactor(col, row))))).transpose();
   }
@@ -142,13 +170,13 @@ export class Matrix {
     );
   }
 
-  inverse(): Matrix {
+  inverse(): SquareMatrix {
     return  this.adjoint().scale(1 / this.determinant());
   }
 
   private _getCofactor(col: number, row: number): number {
     let sign = (col + row) % 2 > 0? -1 : +1;
-    let m = new Matrix(...this.vectors.filter(function (vector, index) {
+    let m = new SquareMatrix(...this.vectors.filter(function (vector, index) {
       return index != col;
     }).map(function (vector, index) {
       return new Vector(...vector.coordinates.filter(function (value, index) {
@@ -157,11 +185,5 @@ export class Matrix {
     }));
 
     return sign * m.determinant();
-  }
-
-  toString(): string {
-    return this.vectors.map(function (vector: Vector) {
-      return vector.toString();
-    }).join('\n');
   }
 }
