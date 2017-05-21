@@ -9,6 +9,7 @@ export class Vector {
     return this.coordinates.length;
   }
 
+  // Returns [m] * [this]
   multiply(m: Matrix): Vector {
     if (m.width != this.length) {
       throw 'The width of the matrix must match the length of the vector';
@@ -32,6 +33,7 @@ export class Vector {
     }));
   }
 
+  // Returns [value] * [this]
   scale(value: number): Vector {
     return new Vector(...this.coordinates.map(function (w: number) {
       return value * w;
@@ -79,6 +81,7 @@ export class Matrix {
     return this.width > 0? this.vectors[0].length: 0;
   }
 
+  // Returns [value] * [this]
   scale(value: number): Matrix {
     return new Matrix(...this.vectors.map(function (vector: Vector) {
       return vector.scale(value);
@@ -125,6 +128,7 @@ export class SquareMatrix extends Matrix {
     }
   }
 
+  // TODO: remove this
   static createFromMatrix(m: Matrix): SquareMatrix {
     return new SquareMatrix(...m.vectors);
   }
