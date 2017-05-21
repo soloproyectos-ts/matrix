@@ -19,7 +19,9 @@ export class Point implements Positionable, Transformable {
   }
 
   transform(t: Transformation): Point {
-    return this;
+    let v = new Vector(...this.coordinates.concat([1])).multiply(t);
+
+    return new Point(...v.coordinates.slice(0, -1));
   }
 
   toString(): string {
