@@ -1,35 +1,4 @@
-export interface Positionable {
-  readonly coordinates: number[];
-  readonly length: number;
-}
-
-export interface Transformable {
-  transform(t: Transformation): Transformable;
-}
-
-export class Point implements Positionable, Transformable {
-  readonly coordinates: number[];
-
-  constructor (...coordinates: number[]) {
-    this.coordinates = coordinates;
-  }
-
-  get length(): number {
-    return this.coordinates.length;
-  }
-
-  transform(t: Transformation): Point {
-    let v = new Vector(...this.coordinates.concat([1])).multiply(t);
-
-    return new Point(...v.coordinates.slice(0, -1));
-  }
-
-  toString(): string {
-    return `[${this.coordinates.join(', ')}]`;
-  }
-}
-
-export class Vector implements Positionable, Transformable {
+export class Vector {
   readonly coordinates: number[];
 
   constructor (...coordinates: number[]) {
