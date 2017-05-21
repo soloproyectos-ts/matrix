@@ -135,12 +135,7 @@ export class Matrix {
       throw 'The width of [this] matrix must match the height of the matrix';
     }
 
-    return new Matrix(...this.transpose().vectors.map((v0) =>
-      new Vector(...m.vectors.map((v1) =>
-        v0.coordinates.reduce((prev, current, i) =>
-          prev + current * v1.coordinates[i], 0)
-      ))
-    ));
+    return new Matrix(...m.vectors.map((vector) => vector.multiply(this)));
   }
 
   toString(): string {
