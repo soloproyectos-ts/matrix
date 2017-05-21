@@ -201,7 +201,7 @@ export class SquareMatrix extends Matrix {
   }
 }
 
-export class Transformation extends SquareMatrix {
+export class Transformation extends SquareMatrix implements Transformable {
   constructor (...vectors: Vector[]) {
     super(...vectors);
 
@@ -226,5 +226,9 @@ export class Transformation extends SquareMatrix {
     if (!test) {
       throw 'The last coordinate of the first vectors must be 0';
     }
+  }
+
+  transform(t: Transformation): Transformation {
+    return new Transformation(...t.multiply(this).vectors);
   }
 }
