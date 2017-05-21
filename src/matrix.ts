@@ -39,9 +39,8 @@ export class Vector implements Positionable, Transformable {
   }
 
   multiply(m: Matrix): Vector {
-    // TODO: more verbose exceptions
     if (m.width != this.length) {
-      throw 'Invalid multiplication';
+      throw 'The width of the matrix must match the length of the vector';
     }
 
     return new Vector(...m.transpose().vectors.map((vector, index) =>
@@ -70,7 +69,7 @@ export class Vector implements Positionable, Transformable {
 
   sum(vector: Vector): Vector {
     if (this.length != vector.length) {
-      throw 'Vectors must have the same size';
+      throw 'The vectors must have the same length';
     }
 
     return new Vector(...this.coordinates.map((w: number, index: number) =>
@@ -133,7 +132,7 @@ export class Matrix {
 
   multiply(m: Matrix): Matrix {
     if (this.width != m.height) {
-      throw 'Invalid matrix multiplication';
+      throw 'The width of [this] matrix must match the height of the matrix';
     }
 
     return new Matrix(...this.transpose().vectors.map((v0) =>
@@ -156,7 +155,7 @@ export class SquareMatrix extends Matrix {
     super(...vectors);
 
     if (this.width != this.height) {
-      throw 'Not a square matrix';
+      throw 'The width and the height of [this] matrix must match';
     }
   }
 
