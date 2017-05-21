@@ -3,7 +3,11 @@ export interface Positionable {
   readonly length: number;
 }
 
-export class Point implements Positionable {
+export interface Transformable {
+  transform(t: Transformation): Transformable;
+}
+
+export class Point implements Positionable, Transformable {
   readonly coordinates: number[];
 
   constructor (...coordinates: number[]) {
@@ -12,6 +16,10 @@ export class Point implements Positionable {
 
   get length(): number {
     return this.coordinates.length;
+  }
+
+  transform(t: Transformation): Point {
+    return this;
   }
 
   toString(): string {
@@ -19,7 +27,7 @@ export class Point implements Positionable {
   }
 }
 
-export class Vector implements Positionable {
+export class Vector implements Positionable, Transformable {
   readonly coordinates: number[];
 
   constructor (...coordinates: number[]) {
@@ -28,6 +36,24 @@ export class Vector implements Positionable {
 
   get length(): number {
     return this.coordinates.length;
+  }
+
+  multiply(m: Matrix): Vector {
+    // TODO: more verbose exceptions
+    if (m.width != this.length) {
+      throw 'Invalid multiplication';
+    }
+
+    return new Vector(...m.transpose().vectors.map((vector, index) =>
+      vector.coordinates.reduce((prev, current, i) =>
+        prev + current * this.coordinates[i], 0)
+    ));
+  }
+
+  transform(t: Transformation): Vector {
+    let v = new Vector(...this.coordinates.concat([1])).multiply(t);
+
+    return new Vector(...v.coordinates.slice(0, -1));
   }
 
   opposite(): Vector {
@@ -177,5 +203,33 @@ export class SquareMatrix extends Matrix {
     }));
 
     return sign * m.determinant();
+  }
+}
+
+export class Transformation extends SquareMatrix {
+  constructor (...vectors: Vector[]) {
+    super(...vectors);
+
+    var test = vectors
+      .slice(-1)
+      .every(function (vector) {
+        let [lastCoordinate] = vector.coordinates.slice(-1);
+
+        return lastCoordinate == 1;
+      });
+    if (!test) {
+      throw 'The last coordinate of the last vector must be 1';
+    }
+
+    var test = vectors
+      .slice(0, -1)
+      .every(function (vector) {
+        let [lastCoordinate] = vector.coordinates.slice(-1);
+
+        return lastCoordinate == 0;
+      });
+    if (!test) {
+      throw 'The last coordinate of the first vectors must be 0';
+    }
   }
 }
