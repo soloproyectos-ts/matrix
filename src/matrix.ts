@@ -128,17 +128,12 @@ export class SquareMatrix extends Matrix {
     }
   }
 
-  // TODO: remove this
-  static createFromMatrix(m: Matrix): SquareMatrix {
-    return new SquareMatrix(...m.vectors);
-  }
-
   scale(value: number): SquareMatrix {
-    return SquareMatrix.createFromMatrix(super.scale(value));
+    return new SquareMatrix(...super.scale(value).vectors);
   }
 
   transpose(): SquareMatrix {
-    return SquareMatrix.createFromMatrix(super.transpose());
+    return new SquareMatrix(...super.transpose().vectors);
   }
 
   adjoint(): SquareMatrix {
