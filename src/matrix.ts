@@ -36,6 +36,14 @@ export class Vector implements Positionable, Transformable {
     this.coordinates = coordinates;
   }
 
+  static createFromPoints(end: Point, start?: Point): Vector {
+    return new Vector(...end.coordinates.map(function (w, i) {
+      let z = start !== undefined? start.coordinates[i]: 0;
+
+      return w - z;
+    }));
+  }
+
   get length(): number {
     return this.coordinates.length;
   }
