@@ -1,2 +1,3 @@
-# matrix2
-Two-dimensional matrix operations
+# Matrix
+
+General matrix operations.
