@@ -262,6 +262,16 @@ export class Transformation extends SquareMatrix implements Transformable {
     }
   }
 
+  inverse(): Transformation {
+    let vectors = super.inverse().vectors;
+
+    return new Transformation(...vectors.slice(0, -1).map((vector) =>
+      new Vector(...vector.coordinates.slice(0, -1).concat([0]))
+    ).concat(vectors.slice(-1).map((vector) =>
+      new Vector(...vector.coordinates.slice(0, -1).concat([1]))
+    )));
+  }
+
   transform(t: Transformation): Transformation {
     return new Transformation(...t.multiply(this).vectors);
   }
