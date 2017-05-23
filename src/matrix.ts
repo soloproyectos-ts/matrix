@@ -224,13 +224,12 @@ export class SquareMatrix extends Matrix {
 
   private _getCofactor(col: number, row: number): number {
     let sign = (col + row) % 2 > 0? -1 : +1;
-    let m = new SquareMatrix(...this.vectors.filter(function (vector, index) {
-      return index != col;
-    }).map(function (vector, index) {
-      return new Vector(...vector.coordinates.filter(function (value, index) {
-        return index != row;
-      }));
-    }));
+    let m = new SquareMatrix(...this.vectors
+      .filter((vector, index) => index != col)
+      .map((vector, index) => new Vector(...vector.coordinates
+        .filter((value, index) => index != row))
+      )
+    );
 
     return sign * m.determinant();
   }
