@@ -98,6 +98,9 @@ define(["require", "exports"], function (require, exports) {
                 return prev + w * w;
             }, 0));
         };
+        Vector.prototype.unit = function () {
+            return this.scale(1 / this.norm());
+        };
         Vector.prototype.toString = function () {
             return "[" + this.coordinates.join(', ') + "]";
         };
