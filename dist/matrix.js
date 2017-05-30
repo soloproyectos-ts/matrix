@@ -26,27 +26,6 @@ define(["require", "exports"], function (require, exports) {
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(Point.prototype, "x", {
-            get: function () {
-                return this.coordinates[0];
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Point.prototype, "y", {
-            get: function () {
-                return this.coordinates[1];
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Point.prototype, "z", {
-            get: function () {
-                return this.coordinates[2];
-            },
-            enumerable: true,
-            configurable: true
-        });
         Point.prototype.transform = function (t) {
             var v = new (Vector.bind.apply(Vector, [void 0].concat(this.coordinates.concat([1]))))().multiply(t);
             return new (Point.bind.apply(Point, [void 0].concat(v.coordinates.slice(0, -1))))();
@@ -74,27 +53,6 @@ define(["require", "exports"], function (require, exports) {
         Object.defineProperty(Vector.prototype, "length", {
             get: function () {
                 return this.coordinates.length;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Vector.prototype, "x", {
-            get: function () {
-                return this.coordinates[0];
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Vector.prototype, "y", {
-            get: function () {
-                return this.coordinates[1];
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Vector.prototype, "z", {
-            get: function () {
-                return this.coordinates[2];
             },
             enumerable: true,
             configurable: true

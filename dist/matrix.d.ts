@@ -1,9 +1,6 @@
 export interface Positionable {
     readonly coordinates: number[];
     readonly length: number;
-    readonly x: number;
-    readonly y: number;
-    readonly z: number;
 }
 export interface Transformable {
     transform(t: Transformation): Transformable;
@@ -12,9 +9,6 @@ export declare class Point implements Positionable, Transformable {
     readonly coordinates: number[];
     constructor(...coordinates: number[]);
     readonly length: number;
-    readonly x: number;
-    readonly y: number;
-    readonly z: number;
     transform(t: Transformation): Point;
     toString(): string;
 }
@@ -23,9 +17,6 @@ export declare class Vector implements Positionable, Transformable {
     constructor(...coordinates: number[]);
     static createFromPoints(end: Point, start?: Point): Vector;
     readonly length: number;
-    readonly x: number;
-    readonly y: number;
-    readonly z: number;
     multiply(m: Matrix): Vector;
     transform(t: Transformation): Vector;
     opposite(): Vector;
