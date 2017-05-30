@@ -1,9 +1,6 @@
 export interface Positionable {
   readonly coordinates: number[];
   readonly length: number;
-  readonly x: number;
-  readonly y: number;
-  readonly z: number;
 }
 
 export interface Transformable {
@@ -19,18 +16,6 @@ export class Point implements Positionable, Transformable {
 
   get length(): number {
     return this.coordinates.length;
-  }
-
-  get x(): number {
-		return this.coordinates[0];
-	}
-
-	get y(): number {
-		return this.coordinates[1];
-	}
-
-  get z(): number {
-    return this.coordinates[2];
   }
 
   transform(t: Transformation): Point {
@@ -61,18 +46,6 @@ export class Vector implements Positionable, Transformable {
 
   get length(): number {
     return this.coordinates.length;
-  }
-
-  get x(): number {
-		return this.coordinates[0];
-	}
-
-	get y(): number {
-		return this.coordinates[1];
-	}
-
-  get z(): number {
-    return this.coordinates[2];
   }
 
   // Returns [m] * [this]
