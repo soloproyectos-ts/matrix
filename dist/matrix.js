@@ -93,6 +93,11 @@ define(["require", "exports"], function (require, exports) {
         Vector.prototype.subtract = function (vector) {
             return this.sum(vector.opposite());
         };
+        Vector.prototype.norm = function () {
+            return Math.sqrt(this.coordinates.reduce(function (prev, w) {
+                return prev + w * w;
+            }, 0));
+        };
         Vector.prototype.toString = function () {
             return "[" + this.coordinates.join(', ') + "]";
         };

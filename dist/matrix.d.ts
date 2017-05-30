@@ -23,6 +23,7 @@ export declare class Vector implements Positionable, Transformable {
     scale(value: number): Vector;
     sum(vector: Vector): Vector;
     subtract(vector: Vector): Vector;
+    norm(): number;
     toString(): string;
 }
 export declare class Matrix {
