@@ -93,6 +93,12 @@ export class Vector implements Positionable, Transformable {
     return this.sum(vector.opposite());
   }
 
+  // Gets the Euclidean Norm of [this] vector.
+  norm(): number {
+    return Math.sqrt(this.coordinates.reduce((prev: number, w: number) =>
+      prev + w * w, 0));
+  }
+
   toString(): string {
     return `[${this.coordinates.join(', ')}]`;
   }
