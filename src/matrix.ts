@@ -99,6 +99,11 @@ export class Vector implements Positionable, Transformable {
       prev + w * w, 0));
   }
 
+  // Gets the unit vector of [this] vector.
+  unit(): Vector {
+    return this.scale(1 / this.norm());
+  }
+
   toString(): string {
     return `[${this.coordinates.join(', ')}]`;
   }
