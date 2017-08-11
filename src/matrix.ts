@@ -7,6 +7,8 @@ export interface Transformable {
   transform(t: Transformation): Transformable;
 }
 
+export type Point = Vector;
+
 export class Vector implements Positionable, Transformable {
   readonly coordinates: number[];
 
