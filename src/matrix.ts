@@ -7,43 +7,11 @@ export interface Transformable {
   transform(t: Transformation): Transformable;
 }
 
-// TODO: remove this class
-export class Point implements Positionable, Transformable {
-  readonly coordinates: number[];
-
-  constructor (...coordinates: number[]) {
-    this.coordinates = coordinates;
-  }
-
-  get length(): number {
-    return this.coordinates.length;
-  }
-
-  transform(t: Transformation): Point {
-    let v = new Vector(...this.coordinates.concat([1])).multiply(t);
-
-    return new Point(...v.coordinates.slice(0, -1));
-  }
-
-  toString(): string {
-    return `[${this.coordinates.join(', ')}]`;
-  }
-}
-
 export class Vector implements Positionable, Transformable {
   readonly coordinates: number[];
 
   constructor (...coordinates: number[]) {
     this.coordinates = coordinates;
-  }
-
-  // TODO: change to (start, end)
-  static createFromPoints(end: Point, start?: Point): Vector {
-    return new Vector(...end.coordinates.map(function (w, i) {
-      let z = start !== undefined? start.coordinates[i]: 0;
-
-      return w - z;
-    }));
   }
 
   get length(): number {
