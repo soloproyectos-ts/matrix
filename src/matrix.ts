@@ -7,6 +7,7 @@ export interface Transformable {
   transform(t: Transformation): Transformable;
 }
 
+// TODO: remove this class
 export class Point implements Positionable, Transformable {
   readonly coordinates: number[];
 
