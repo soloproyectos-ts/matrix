@@ -5,17 +5,10 @@ export interface Positionable {
 export interface Transformable {
     transform(t: Transformation): Transformable;
 }
-export declare class Point implements Positionable, Transformable {
-    readonly coordinates: number[];
-    constructor(...coordinates: number[]);
-    readonly length: number;
-    transform(t: Transformation): Point;
-    toString(): string;
-}
+export declare type Point = Vector;
 export declare class Vector implements Positionable, Transformable {
     readonly coordinates: number[];
     constructor(...coordinates: number[]);
-    static createFromPoints(end: Point, start?: Point): Vector;
     readonly length: number;
     multiply(m: Matrix): Vector;
     transform(t: Transformation): Vector;
@@ -51,3 +44,5 @@ export declare class Transformation extends SquareMatrix implements Transformabl
     inverse(): Transformation;
     transform(t: Transformation): Transformation;
 }
+export declare function rad2deg(angle: number): number;
+export declare function deg2rad(angle: number): number;

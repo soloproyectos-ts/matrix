@@ -11,31 +11,6 @@ var __extends = (this && this.__extends) || (function () {
 define(["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    var Point = (function () {
-        function Point() {
-            var coordinates = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                coordinates[_i] = arguments[_i];
-            }
-            this.coordinates = coordinates;
-        }
-        Object.defineProperty(Point.prototype, "length", {
-            get: function () {
-                return this.coordinates.length;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Point.prototype.transform = function (t) {
-            var v = new (Vector.bind.apply(Vector, [void 0].concat(this.coordinates.concat([1]))))().multiply(t);
-            return new (Point.bind.apply(Point, [void 0].concat(v.coordinates.slice(0, -1))))();
-        };
-        Point.prototype.toString = function () {
-            return "[" + this.coordinates.join(', ') + "]";
-        };
-        return Point;
-    }());
-    exports.Point = Point;
     var Vector = (function () {
         function Vector() {
             var coordinates = [];
@@ -44,12 +19,6 @@ define(["require", "exports"], function (require, exports) {
             }
             this.coordinates = coordinates;
         }
-        Vector.createFromPoints = function (end, start) {
-            return new (Vector.bind.apply(Vector, [void 0].concat(end.coordinates.map(function (w, i) {
-                var z = start !== undefined ? start.coordinates[i] : 0;
-                return w - z;
-            }))))();
-        };
         Object.defineProperty(Vector.prototype, "length", {
             get: function () {
                 return this.coordinates.length;
@@ -258,4 +227,12 @@ define(["require", "exports"], function (require, exports) {
         return Transformation;
     }(SquareMatrix));
     exports.Transformation = Transformation;
+    function rad2deg(angle) {
+        return 180 * angle / Math.PI;
+    }
+    exports.rad2deg = rad2deg;
+    function deg2rad(angle) {
+        return Math.PI * angle / 180;
+    }
+    exports.deg2rad = deg2rad;
 });
