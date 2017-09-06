@@ -7,7 +7,6 @@ export interface Transformable {
   transform(t: Transformation): Transformable;
 }
 
-// TODO: remove this artifact
 export type Point = Vector;
 
 export class Vector implements Positionable, Transformable {
