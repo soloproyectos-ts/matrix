@@ -1,3 +1,3 @@
-# Matrix
+# SVG Matrix
 
-General matrix operations.
+A library to perform common matrix operations
